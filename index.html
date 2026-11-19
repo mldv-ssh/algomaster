@@ -2789,12 +2789,13 @@ Fin`},
    Afficher "Meilleur jour : ", meilleur + 1
    Afficher "Jours au-dessus de 1000 : ", compteur
 Fin`},
-{id:"occur",cat:"tableaux",d:3,t:"Atelier : toutes les positions d'une valeur",must:"boucle",vars:"T et x",
- q:"Dans un même algorithme.\nOn dispose d'un tableau T contenant 20 nombres entiers et d'un nombre x à rechercher (dans le cours, x est demandé avec Lire).\n- Vérifier si ce nombre existe dans le tableau.\n- Afficher toutes les positions où il apparaît.\n- Compter le nombre d'occurrences.",
- spec:"Affiche chaque position (une par ligne), puis le nombre d'occurrences. Si x est absent, affiche seulement \"Absent\". T et x sont fournis par les tests.",
- h:["Un compteur, et un Afficher i chaque fois que T[i] = x.","Après la boucle : Si compteur = 0 alors \"Absent\", sinon afficher compteur."],
- start:D0, tests:[{vars:{T:[4,7,4,1],x:4},out:[0,2,2]},{vars:{T:[4,7,4,1],x:9},out:["Absent"]},{vars:{T:[5,5,5],x:5},out:[0,1,2,3]}],
+{id:"occur",cat:"tableaux",d:3,t:"Atelier : toutes les positions d'une valeur",must:"boucle",vars:"T",
+ q:"Dans un même algorithme.\nOn dispose d'un tableau T contenant 20 nombres entiers.\n- Demander un nombre à rechercher.\n- Vérifier si ce nombre existe dans le tableau.\n- Afficher toutes les positions où il apparaît.\n- Compter le nombre d'occurrences.",
+ spec:"Lis le nombre à rechercher (x) avec Lire. Affiche chaque position (une par ligne), puis le nombre d'occurrences. Si x est absent, affiche seulement \"Absent\". T est fourni par les tests.",
+ h:["Lire x, puis un compteur, et un Afficher i chaque fois que T[i] = x.","Après la boucle : Si compteur = 0 alors \"Absent\", sinon afficher compteur."],
+ start:D0, tests:[{vars:{T:[4,7,4,1]},in:[4],out:[0,2,2]},{vars:{T:[4,7,4,1]},in:[9],out:["Absent"]},{vars:{T:[5,5,5]},in:[5],out:[0,1,2,3]}],
  s:`Début
+   Lire x
    compteur ← 0
    Pour i ← 0 à taille(T) - 1 Faire
       Si T[i] = x Alors
