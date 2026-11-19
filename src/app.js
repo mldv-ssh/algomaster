@@ -88,7 +88,8 @@ function home(){
   <h2>Ta maîtrise par catégorie</h2>
   <div class="card">${bars}${S.answered?"":`<p class="sub" style="margin:10px 0 0">Réponds à des quiz pour voir ta progression ici.</p>`}</div>
   ${S.exams.length?`<h2>Tes examens blancs</h2><div class="card">${S.exams.slice(-8).reverse().map(e=>`<div class="catbar"><span>${e.date}</span><div class="bar"><i style="width:${e.note*5}%"></i></div><em>${e.note}/20</em></div>`).join("")}</div>`:""}
-  <p class="sub" style="margin-top:30px;text-align:center"><button class="btn ghost sm" onclick="resetAll()">Réinitialiser ma progression</button></p>`);
+  <p class="sub" style="margin-top:30px;text-align:center"><button class="btn ghost sm" onclick="resetAll()">Réinitialiser ma progression</button></p>
+  <p class="app-ver">AlgoMaster v__VERSION__ · mis à jour le __DATE__</p>`);
 }
 function resetAll(){ ask("Effacer toute ta progression (XP, stats, erreurs, leçons lues) ?", ()=>{ S=DEF(); save(); go("home"); }, "Tout effacer"); }
 // Fenêtre de confirmation intégrée (confirm() est bloqué dans certaines vues, dont la page publiée)

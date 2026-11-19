@@ -7,6 +7,9 @@ $out  = Join-Path $PSScriptRoot "out"
 New-Item -ItemType Directory -Force $out | Out-Null
 $utf8 = New-Object System.Text.UTF8Encoding($false)
 $desktop = [Environment]::GetFolderPath("Desktop")
+# Numéro de version (fichier VERSION) et date de mise à jour (date du build)
+$version = ([IO.File]::ReadAllText("$PSScriptRoot\VERSION", $utf8)).Trim()
+$date    = (Get-Date).ToString("dd/MM/yyyy")
 
 # 1. Icône (PNG 256, réutilisé en .ico et en icône d'écran d'accueil)
 Add-Type -AssemblyName System.Drawing
@@ -32,13 +35,15 @@ $iconUri = "data:image/png;base64," + [Convert]::ToBase64String($png)
 $css  = [IO.File]::ReadAllText("$src\style.css", $utf8)
 $js   = (@("course.js","questions.js","interp.js","exos.js","chat.js","app.js") | ForEach-Object { [IO.File]::ReadAllText("$src\$_", $utf8) }) -join "`n;`n"
 $tpl  = [IO.File]::ReadAllText("$src\index.html", $utf8)
-$html = $tpl.Replace("/*CSS*/", $css).Replace("/*JS*/", $js).Replace("/*ICON*/", $iconUri)
+$html = $tpl.Replace("/*CSS*/", $css).Replace("/*JS*/", $js).Replace("/*ICON*/", $iconUri).Replace("__VERSION__", $version).Replace("__DATE__", $date)
 [IO.File]::WriteAllText("$PSScriptRoot\index.html", $html, $utf8)
 
 # 3. Lanceur Windows + copies sur le Bureau
 $csc = "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe"
 $exe = Join-Path $desktop "AlgoMaster.exe"
-& $csc /nologo /target:winexe /optimize+ "/out:$exe" "/win32icon:$out\app.ico" "/resource:$PSScriptRoot\index.html,index.html" /r:System.Windows.Forms.dll "$src\Launcher.cs"
+$launcher = [IO.File]::ReadAllText("$src\Launcher.cs", $utf8) -replace 'Version\("[\d.]+"\)', "Version(`"$version.0`")"
+[IO.File]::WriteAllText("$out\Launcher.cs", $launcher, $utf8)
+& $csc /nologo /target:winexe /optimize+ "/out:$exe" "/win32icon:$out\app.ico" "/resource:$PSScriptRoot\index.html,index.html" /r:System.Windows.Forms.dll "$out\Launcher.cs"
 if ($LASTEXITCODE -ne 0) { throw "Compilation échouée" }
 Copy-Item "$PSScriptRoot\index.html" (Join-Path $desktop "AlgoMaster.html") -Force
 Write-Output "OK -> $exe"
