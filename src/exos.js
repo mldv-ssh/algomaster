@@ -123,7 +123,7 @@ Fin`},
    FinSi
 Fin`},
 {id:"bugtarif",cat:"conditions",d:2,t:"🐞 Corrige l'erreur logique",must:"si",
- q:"Ce code (tiré du cours) doit donner 15 € aux 18 ans et plus, 8 € de 12 à 17 ans, 5 € avant 12 ans. Il contient une erreur logique : corrige-le.",
+ q:"Ce code (tiré du cours) lit un âge avec Lire et doit afficher le prix : 15 € aux 18 ans et plus, 8 € de 12 à 17 ans, 5 € avant 12 ans. Il contient une erreur logique : corrige-le.",
  h:["Lance-le avec age = 30 : quelle branche est prise ?","La branche age >= 18 n'est jamais atteinte. Change l'ordre des tests."],
  start:`Début
    Lire age

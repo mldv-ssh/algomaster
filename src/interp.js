@@ -180,7 +180,7 @@ const PC = (() => {
   const parseInput = s => { s=String(s).trim(); if(/^-?\d+([.,]\d+)?$/.test(s)) return parseFloat(s.replace(",",".")); const l=low(s); if(l==="vrai") return true; if(l==="faux") return false; return s.replace(/^"(.*)"$/,"$1"); };
 
   function run(prog, {inputs=[], vars={}, call=null, maxSteps=200000}={}){
-    const out=[]; let steps=0, prevPrint=false, depth=0; const inQ=inputs.map(parseInput);
+    const out=[]; let steps=0, run=[], depth=0; const inQ=inputs.map(parseInput);
     const G=Object.create(null); for(const k in vars) G[low(k)]=clone(vars[k]);
     const tick=ln=>{ if(++steps>maxSteps) throw new PErr("Plus de 200 000 instructions exécutées : boucle infinie probable. La condition d'arrêt devient-elle vraiment vraie ? La variable est-elle modifiée dans la boucle ?",ln); };
     const num=(v,ln,op)=>{ if(typeof v!=="number") throw new PErr(`« ${op} » attend des nombres, mais reçoit ${tname(v)} (${fmt(v)})`,ln); return v; };
@@ -255,9 +255,11 @@ const PC = (() => {
           case "print": {
             const txt=s.args.map(a=>fmt(ev(a,sc,ln))).join(" ").replace(/ {2,}/g," ").trim();
             out.push({text:txt,prompt:false}); if(out.length>3000) throw new PErr("Plus de 3000 lignes affichées : boucle infinie probable",ln);
+            run.push({i:out.length-1, lit:s.args.every(a=>a.t==="lit"&&typeof a.v==="string")});
             break; }
           case "read":
-            if(prevPrint&&out.length) out[out.length-1].prompt=true;
+            // Invites : le Afficher juste avant Lire, et les Afficher de texte seul qui le précèdent directement
+            run.forEach((p,k)=>{ if(k===run.length-1 || p.lit) out[p.i].prompt=true; });
             for(const tg of s.tgs){
               if(!inQ.length) throw new PErr(`« Lire » ne trouve plus de donnée : ce test n'en fournit que ${inputs.length}. Lis-tu trop de valeurs, ou est-ce une boucle qui ne s'arrête pas ?`,ln);
               assign(tg,inQ.shift(),sc,ln);
@@ -280,7 +282,7 @@ const PC = (() => {
           case "while": while(bool(ev(s.c,sc,ln),ln,"La condition du TantQue")){ tick(ln); exec(s.body,sc); } break;
           case "repeat": do{ tick(ln); exec(s.body,sc); } while(!bool(ev(s.c,sc,ln),ln,"La condition du Jusqu'à")); break;
         }
-        prevPrint = s.t==="print";
+        if(s.t!=="print") run = [];
       }
     }
     let ret, err=null;

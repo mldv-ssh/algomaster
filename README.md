@@ -52,6 +52,7 @@ src/
 ├── index.html     gabarit
 └── Launcher.cs    lanceur Windows (AlgoMaster.exe)
 build.ps1          script de build
+tests/             audit du contenu et test de bout en bout
 index.html         fichier généré, servi par GitHub Pages
 ```
 
@@ -66,3 +67,12 @@ powershell -ExecutionPolicy Bypass -File build.ps1
 Le script régénère `index.html` et crée `AlgoMaster.exe` et `AlgoMaster.html` sur le Bureau.
 
 Le site est déployé via GitHub Pages : pousser `index.html` suffit à le mettre à jour.
+
+## Tests
+
+```bash
+node tests/audit.js      # contenu : exercices, questions, leçons, assistant
+node tests/run-e2e.js    # parcours complet de l'appli dans Edge (grand écran et téléphone)
+```
+
+`audit.js` vérifie que chaque correction passe ses tests, que les énoncés, les consignes et les tests sont cohérents, et recalcule par exécution les réponses des questions du quiz. `run-e2e.js` ouvre toutes les pages et leçons, résout les exercices, fait un quiz complet, l'examen blanc, les flashcards et l'assistant, et signale toute erreur ou tout débordement d'affichage.
