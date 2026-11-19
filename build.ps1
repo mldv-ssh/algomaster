@@ -7,9 +7,19 @@ $out  = Join-Path $PSScriptRoot "out"
 New-Item -ItemType Directory -Force $out | Out-Null
 $utf8 = New-Object System.Text.UTF8Encoding($false)
 $desktop = [Environment]::GetFolderPath("Desktop")
-# Numéro de version (fichier VERSION) et date de mise à jour (date du build)
-$version = ([IO.File]::ReadAllText("$PSScriptRoot\VERSION", $utf8)).Trim()
-$date    = (Get-Date).ToString("dd/MM/yyyy")
+# Version et date de mise à jour, automatiques :
+#  - version = <VERSION>.<nombre de commits> (+1 si des modifications ne sont pas encore committées)
+#  - date    = aujourd'hui s'il y a des modifications en cours, sinon date du dernier commit
+$base = ([IO.File]::ReadAllText("$PSScriptRoot\VERSION", $utf8)).Trim()
+$patch = 0; $date = (Get-Date).ToString("dd/MM/yyyy")
+try {
+  Push-Location $PSScriptRoot
+  $count   = [int](git rev-list --count HEAD 2>$null)
+  $pending = git status --porcelain -- . ":!index.html" 2>$null   # index.html est généré par ce script
+  if ($pending) { $patch = $count + 1 }
+  else { $patch = $count; $date = ([datetime](git log -1 --format=%cI)).ToString("dd/MM/yyyy") }
+} catch { } finally { Pop-Location }
+$version = "$base.$patch"
 
 # 1. Icône (PNG 256, réutilisé en .ico et en icône d'écran d'accueil)
 Add-Type -AssemblyName System.Drawing

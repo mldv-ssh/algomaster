@@ -64,7 +64,7 @@ Les sources sont dans `src/`. Après une modification :
 powershell -ExecutionPolicy Bypass -File build.ps1
 ```
 
-Le numéro de version affiché dans l'appli est dans le fichier `VERSION` (la date de mise à jour est celle du build). Le script régénère `index.html` et crée `AlgoMaster.exe` et `AlgoMaster.html` sur le Bureau.
+La version affichée dans l'appli est calculée automatiquement : `VERSION` (ex. 2.3) suivi du nombre de commits, et la date est celle de la dernière modification. Le script régénère `index.html` et crée `AlgoMaster.exe` et `AlgoMaster.html` sur le Bureau.
 
 Le site est déployé via GitHub Pages : pousser `index.html` suffit à le mettre à jour.
 
