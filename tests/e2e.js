@@ -11,7 +11,7 @@
   const overflow = name => { if (document.documentElement.scrollWidth > innerWidth + 1 || document.querySelector("#main").scrollWidth > document.querySelector("#main").clientWidth + 1) R.overflow.push(name); };
   try {
     // 1. Toutes les pages
-    for (const v of ["home","cours","quiz","exam","chat","fiche","flash","errors","exos"]) {
+    for (const v of ["home","search","cours","quiz","exam","chat","fiche","flash","errors","exos"]) {
       go(v); ok(`page ${v}`, txt("#main").length > 80); overflow(`page ${v}`);
     }
     // 2. Toutes les leçons, et chaque exécution pas à pas jusqu'au bout
@@ -82,7 +82,29 @@
     document.querySelector("#chat-sugg .chip").click(); await wait(10);
     ok("assistant : suggestion cliquable", document.querySelectorAll(".msg.me").length === chatQ.length + 2);
     overflow("assistant");
+    // 7 ter. Recherche
+    const items = () => [...document.querySelectorAll("#sres .res-item")];
+    go("search", "Tri a bulles (bubble");
+    ok("recherche : la leçon sur les tris", /Leçons/.test(txt("#sres")) && items().some(r => /tri/i.test(r.innerText)));
+    ok("recherche : l'exercice Tri à bulles", items().some(r => /Tri à bulles/.test(r.innerText)));
+    ok("recherche : mots surlignés", document.querySelectorAll("#sres mark").length > 0);
+    overflow("recherche");
+    go("search", "bul"); ok("recherche : mot en cours de frappe", items().some(r => /bulle/i.test(r.innerText)));
+    go("search", "xyzqwv"); ok("recherche : aucun résultat", /Aucun résultat/.test(txt("#sres")));
+    go("search", ""); ok("recherche : suggestions", document.querySelectorAll("#sres .chip").length > 0);
+    document.querySelector("#sres .chip").click(); ok("recherche : suggestion cliquable", items().length > 0);
+    const sq = document.querySelector("#sq"); sq.value = "pgcd"; sq.dispatchEvent(new Event("input"));
+    ok("recherche : résultats pendant la frappe", items().some(r => /pgcd/i.test(r.innerText)));
+    go("search", "tri à bulles"); document.querySelector('.res-item[data-go*="lecon"]').click();
+    ok("recherche : ouvre la leçon", view === "cours" && /tri/i.test(txt("h1")));
+    go("search", "tri à bulles"); document.querySelector('.res-item[data-go*="exo"]').click();
+    ok("recherche : ouvre l'exercice", !!document.querySelector("#ed"));
+    go("search", "flashcard récursif"); const det = document.querySelector("#sres details.res-item");
+    if (det) { det.open = true; ok("recherche : réponse d'une flashcard dépliable", det.querySelector(".res-ans").innerText.length > 5); }
+    go("home"); document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", ctrlKey: true }));
+    ok("recherche : Ctrl+K", view === "search");
     // 7 bis. IA locale simulée : réponse normale, réponse qui boucle, arrêt manuel
+    go("chat");
     const fakeEngine = (text, delay = 0) => ({ interruptGenerate(){ this.stopped = true; }, chat: { completions: { create: async () => (async function* (eng) {
       for (const w of text.match(/\S+\s*/g)) { if (eng.stopped) return; if (delay) await wait(delay); yield { choices: [{ delta: { content: w } }] }; } })(CHAT.engine) } } });
     CHAT.engine = fakeEngine("Une boucle TantQue répète un bloc tant que sa condition est VRAIE. Elle teste la condition avant chaque tour.");

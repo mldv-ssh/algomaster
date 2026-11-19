@@ -1,4 +1,5 @@
-// ================== ASSISTANT (chatbot) ==================
+// ================== ASSISTANT (chatbot) ET RECHERCHE ==================
+// Le même moteur de recherche (BM25 sur tout le contenu) sert la page Recherche et l'assistant.
 // Deux moteurs, tous deux gratuits et sans serveur :
 //  1. Assistant du cours (toujours actif) : recherche BM25 dans les leçons, la fiche, les flashcards
 //     et les corrections du quiz ; exécute aussi le pseudo-code collé dans le message.
@@ -41,23 +42,88 @@ function buildKB(){
     const good = q.t==="qcm"?q.ch[q.a]:q.t==="vf"?(q.a?"Vrai":"Faux"):q.a[0];
     add({kind:"quiz", title:q.q, html:`<p><b>${esc(good)}</b></p>${q.code?`<pre class="code">${esc(q.code)}</pre>`:""}<p>${q.e}</p>`, text:q.q+" "+good+" "+htmlText(q.e)}, 0.7);
   });
+  EXOS.forEach(e=>add({kind:"exo", title:e.t, html:"", text:e.q+" "+(e.spec||"")+" "+e.h.join(" "), exo:e.id}, 1.1));
   const df = {};
   kb.forEach(d=>{ new Set(d.t).forEach(w=>df[w]=(df[w]||0)+1); });
   CHAT.idf = w => Math.log(1 + (kb.length - (df[w]||0) + .5) / ((df[w]||0) + .5));
   CHAT.avgLen = kb.reduce((s,d)=>s+d.t.length,0)/kb.length;
+  CHAT.vocab = Object.keys(df);
   CHAT.kb = kb;
 }
-function search(query, n=5){
+// kinds : types de résultats acceptés (par défaut tous). Le dernier mot, s'il est en cours de frappe,
+// trouve aussi les mots qui commencent pareil (« bul » → « bulles »).
+function search(query, n=5, kinds=null){
   if(!CHAT.kb) buildKB();
   const qt = [...new Set(toks(query))];
   if(!qt.length) return [];
-  return CHAT.kb.map(d=>{
+  const last = PC.low(query).split(/[^a-z0-9]+/).filter(Boolean).pop() || "";
+  const extra = last.length >= 3 && !/\s$/.test(query) ? CHAT.vocab.filter(v=>v.startsWith(last) && !qt.includes(v)).slice(0,15) : [];
+  const parts = qt.length + (extra.length ? 1 : 0);
+  return CHAT.kb.filter(d=>!kinds || kinds.includes(d.kind)).map(d=>{
     const tf = {}; d.t.forEach(w=>tf[w]=(tf[w]||0)+1);
-    let s = 0;
-    for(const w of qt){ const f = tf[w]||0; if(f) s += CHAT.idf(w) * f*2.2 / (f + 1.2*(.25 + .75*d.t.length/CHAT.avgLen)); }
-    const cover = qt.filter(w=>d.tt.has(w)).length / qt.length; // bonus si la question correspond au titre
+    const bm = w => { const f = tf[w]||0; return f ? CHAT.idf(w) * f*2.2 / (f + 1.2*(.25 + .75*d.t.length/CHAT.avgLen)) : 0; };
+    let s = qt.reduce((a,w)=>a+bm(w),0) + extra.reduce((a,w)=>a+0.7*bm(w),0);
+    const cover = (qt.filter(w=>d.tt.has(w)).length + (extra.some(w=>d.tt.has(w))?1:0)) / parts; // bonus si la requête correspond au titre
     return {d, s: s*d.w*(1 + cover)};
   }).filter(r=>r.s>0).sort((a,b)=>b.s-a.s).slice(0,n);
+}
+
+// ---------- page Recherche ----------
+let SQ = "";
+const SEARCH_SUGG = ["tri à bulles","boucle infinie","MOD","récursivité","tableau","TantQue","PGCD","fonction"];
+const KIND = {lecon:["📚","Leçons"], exo:["✏️","Exercices de l'atelier"], fiche:["📋","Fiche résumé"], flash:["🃏","Flashcards"], quiz:["🎯","Questions du quiz"]};
+function searchPage(q){
+  if(typeof q === "string") SQ = q;
+  page(`<h1>🔎 Recherche</h1><p class="sub">Cherche dans les leçons, les exercices, la fiche, les flashcards et le quiz. Astuce : <span class="kbd">Ctrl</span> + <span class="kbd">K</span> ouvre la recherche depuis n'importe où.</p>
+  <input id="sq" class="search-in" type="search" placeholder="Ex : tri à bulles, boucle infinie, MOD, récursivité…" value="${esc(SQ)}" autocomplete="off" aria-label="Rechercher">
+  <div id="sres"></div>`);
+  const inp = $("#sq"); inp.focus(); inp.setSelectionRange(SQ.length, SQ.length);
+  inp.addEventListener("input", () => { SQ = inp.value; drawResults(); });
+  $("#sres").onclick = ev => {
+    const s = ev.target.closest("[data-s]"); if(s){ SQ = s.dataset.s; inp.value = SQ; drawResults(); return; }
+    const r = ev.target.closest("[data-go]"); if(!r) return;
+    const [k, a, b] = JSON.parse(r.dataset.go);
+    if(k==="lecon") openLesson(a, b); else if(k==="exo") go("exos", a); else if(k==="fiche") go("fiche");
+  };
+  drawResults();
+}
+// Ouvre une leçon et descend jusqu'à la partie trouvée
+function openLesson(id, section){
+  go("cours", id);
+  if(!section) return;
+  const h = [...document.querySelectorAll(".lesson h3")].find(x => x.textContent.trim() === section);
+  if(h) h.scrollIntoView({block:"start"});
+}
+// Extrait du texte autour du premier mot trouvé, mots de la recherche surlignés
+function snippet(text, words, len=170){
+  const L = PC.low(text);
+  let at = -1; for(const w of words){ const i = L.indexOf(w); if(i >= 0 && (at < 0 || i < at)) at = i; }
+  const start = Math.max(0, at - 50), part = text.slice(start, start + len), lp = PC.low(part);
+  let html = "", i = 0;
+  while(i < part.length){
+    const w = words.find(w => lp.startsWith(w, i));
+    if(w){ html += `<mark>${esc(part.slice(i, i + w.length))}</mark>`; i += w.length; } else { html += esc(part[i]); i++; }
+  }
+  return (start ? "… " : "") + html + (start + len < text.length ? " …" : "");
+}
+function drawResults(){
+  const box = $("#sres"); if(!box) return;
+  if(SQ.trim().length < 2){ box.innerHTML = `<p class="lbl" style="margin-top:16px">Recherches fréquentes :</p><div class="chips">${SEARCH_SUGG.map(s=>`<button class="chip" data-s="${esc(s)}">${esc(s)}</button>`).join("")}</div>`; return; }
+  const hits = search(SQ, 60);
+  const words = [...new Set(PC.low(SQ).split(/[^a-z0-9]+/).filter(w => w.length >= 3 && !STOP.has(w)))];
+  if(!hits.length){ box.innerHTML = `<div class="empty"><b>🤷</b>Aucun résultat pour « ${esc(SQ)} ». Essaie un autre mot, ou pose la question à l'<a onclick="go('chat')">Assistant</a>.</div>`; return; }
+  const limit = {lecon:6, exo:6, fiche:3, flash:4, quiz:5};
+  box.innerHTML = `<p class="lbl" style="margin:14px 0 4px">${hits.length >= 60 ? "Plus de 60" : hits.length} résultat(s)</p>` + Object.keys(KIND).map(k => {
+    const list = hits.filter(h => h.d.kind === k).slice(0, limit[k]); if(!list.length) return "";
+    return `<h2>${KIND[k][0]} ${KIND[k][1]}</h2><div class="res-list">${list.map(({d}) => {
+      const sec = d.title.split(" — ")[1];
+      const target = k==="lecon" ? ["lecon", d.lesson, sec] : k==="exo" ? ["exo", d.exo] : k==="fiche" ? ["fiche"] : null;
+      const head = `<b>${snippet(d.title, words, 200)}</b><span class="res-sn">${snippet(d.text, words)}</span>`;
+      return target ? `<button class="res-item" data-go="${esc(JSON.stringify(target))}">${head}</button>`
+        : `<details class="res-item"><summary>${head}</summary><div class="res-ans">${d.html}</div></details>`;
+    }).join("")}</div>`;
+  }).join("");
+  enhance();
 }
 
 // ---------- pseudo-code collé dans le message ----------
@@ -202,7 +268,7 @@ async function send(text){
   const code = looksLikeCode(text);
   const small = !code && SMALL.some(([re])=>re.test(text)); // salutations : réponse directe, sans l'IA
   const u = {role:"user", text, code, plain:text}; CHAT.log.push(u); drawMsg(u);
-  const hits = search(code ? text.replace(/[←<\-"]/g," ") : text);
+  const hits = search(code ? text.replace(/[←<\-"]/g," ") : text, 5, ["lecon","fiche","flash","quiz"]); // l'assistant répond avec le cours, pas les exercices
   const run = code ? runSnippet(text) : null;
   const bot = {role:"assistant", html:""}; CHAT.log.push(bot);
   const el = drawMsg(bot);

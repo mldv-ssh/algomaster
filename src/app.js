@@ -7,7 +7,7 @@ const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch
 
 // ================== UTILS ==================
 const $ = s => document.querySelector(s);
-const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); // sûr aussi dans les attributs
 const shuffle = a => { a=[...a]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; };
 const norm = s => String(s).trim().toLowerCase().replace(/\s+/g,"").replace(",",".").replace(/€$/,"");
 const qkey = q => q.c + "|" + q.q + "|" + (q.code||"");
@@ -31,7 +31,7 @@ const level = () => Math.floor(S.xp/100)+1;
 
 // ================== NAV ==================
 const NAV = [
-  ["home","🏠","Accueil"],["cours","📚","Cours"],["quiz","🎯","Quiz"],["exam","📝","Examen blanc"],["chat","💬","Assistant"],
+  ["home","🏠","Accueil"],["search","🔎","Recherche"],["cours","📚","Cours"],["quiz","🎯","Quiz"],["exam","📝","Examen blanc"],["chat","💬","Assistant"],
   ["sep"],["fiche","📋","Fiche résumé"],["flash","🃏","Flashcards"],["errors","🔁","Mes erreurs"],["exos","✏️","Atelier code"],
 ];
 let view = "home", stopTimer = null;
@@ -45,7 +45,7 @@ function go(v, arg){
   if(stopTimer){ stopTimer(); stopTimer=null; }
   view = v; renderSide();
   const m = $("#main"); m.scrollTop = 0; window.scrollTo(0,0);
-  ({home, cours, quiz:quizSetup, exam:examIntro, chat, fiche, flash, errors, exos})[v](arg);
+  ({home, search:searchPage, cours, quiz:quizSetup, exam:examIntro, chat, fiche, flash, errors, exos})[v](arg);
 }
 const page = html => { $("#main").innerHTML = `<div class="wrap">${html}</div>`; enhance(); };
 function enhance(){
@@ -539,6 +539,7 @@ function exoPage(id){
 
 // ================== CLAVIER ==================
 document.addEventListener("keydown", e=>{
+  if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==="k"){ e.preventDefault(); go("search"); return; }
   if(view==="flash" && FL && FL.deck.length){
     if(e.key===" "){ e.preventDefault(); $("#fc")?.classList.toggle("flip"); }
     if(e.key==="1") flAns(false); if(e.key==="2") flAns(true);

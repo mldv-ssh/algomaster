@@ -276,3 +276,16 @@ pre.code{max-width:100%}
 .app-ver{text-align:center;color:var(--mut);font-size:12px;margin:8px 0 0}
 .brand .logo{flex:none}
 .brand small{white-space:nowrap}
+
+/* Recherche */
+.search-in{width:100%;background:var(--bg2);border:2px solid var(--line);border-radius:14px;padding:14px 18px;color:var(--txt);font:17px "Segoe UI",system-ui,sans-serif;outline:none}
+.search-in:focus{border-color:var(--acc)}
+.res-list{display:flex;flex-direction:column;gap:8px}
+.res-item{all:unset;box-sizing:border-box;display:block;cursor:pointer;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;min-width:0;overflow-wrap:anywhere}
+.res-item:hover,.res-item[open]{border-color:var(--acc)}
+.res-item summary{list-style:none}
+.res-item summary::-webkit-details-marker{display:none}
+.res-item b{display:block;color:var(--txt);margin-bottom:3px}
+.res-sn{display:block;color:var(--mut);font-size:14px}
+.res-ans{margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+mark{background:rgba(34,211,238,.25);color:inherit;border-radius:3px;padding:0 1px}
