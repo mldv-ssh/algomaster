@@ -82,6 +82,29 @@
     document.querySelector("#chat-sugg .chip").click(); await wait(10);
     ok("assistant : suggestion cliquable", document.querySelectorAll(".msg.me").length === chatQ.length + 2);
     overflow("assistant");
+    // 7 bis. IA locale simulée : réponse normale, réponse qui boucle, arrêt manuel
+    const fakeEngine = (text, delay = 0) => ({ interruptGenerate(){ this.stopped = true; }, chat: { completions: { create: async () => (async function* (eng) {
+      for (const w of text.match(/\S+\s*/g)) { if (eng.stopped) return; if (delay) await wait(delay); yield { choices: [{ delta: { content: w } }] }; } })(CHAT.engine) } } });
+    CHAT.engine = fakeEngine("Une boucle TantQue répète un bloc tant que sa condition est VRAIE. Elle teste la condition avant chaque tour.");
+    await send("c'est quoi TantQue ?");
+    let last = [...document.querySelectorAll(".msg.bot")].pop();
+    ok("IA : réponse normale affichée", /teste la condition/.test(last.innerText) && !last.querySelector(".errbox"), last.innerText.slice(0, 120));
+    CHAT.engine = fakeEngine("Bonjour. " + "Je suis ici pour vous aider et offrir des informations de manière générale. ".repeat(40));
+    await send("explique les tableaux");
+    last = [...document.querySelectorAll(".msg.bot")].pop();
+    const reps = (last.innerText.match(/Je suis ici pour vous aider/g) || []).length;
+    ok("IA : boucle de répétition coupée", reps <= 2 && /tourner en rond/.test(last.innerText), `${reps} répétitions`);
+    ok("IA : réponse en boucle exclue de l'historique", CHAT.log[CHAT.log.length - 1].bad === true);
+    CHAT.engine = fakeEngine("mot ".repeat(300), 5);
+    const pending = send("question longue");
+    await wait(30);
+    ok("IA : bouton Arrêter pendant la réponse", /Arrêter/.test(document.querySelector("#chat-send").textContent));
+    document.querySelector("#chat-send").click();
+    await pending;
+    ok("IA : arrêt manuel", /réponse arrêtée/.test([...document.querySelectorAll(".msg.bot")].pop().innerText) && /Envoyer/.test(document.querySelector("#chat-send").textContent));
+    await send("bonjour");
+    ok("IA : salutation sans passer par l'IA", /Salut/.test([...document.querySelectorAll(".msg.bot")].pop().innerText));
+    CHAT.engine = null;
     // 8. Réinitialisation via la fenêtre de confirmation
     go("home"); resetAll(); document.querySelector('.modal [data-r="1"]').click();
     ok("réinitialisation", S.xp === 0 && S.read.length === 0 && !Object.keys(S.solved).length);

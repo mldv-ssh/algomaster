@@ -130,14 +130,35 @@ Réponds en français, simplement, en 3 à 8 phrases maximum, avec un petit exem
 Utilise la syntaxe de pseudo-code du cours : affectation avec ←, Lire, Afficher, Si … Alors … Sinon … FinSi, Pour i allant de a à b Faire … FinPour, TantQue … Faire … FinTantQue, Répéter … Jusqu'à …, Fonction Nom(param) : type … Retourner … FinFonction, MOD, DIV, ET, OU, NON, VRAI, FAUX. Les tableaux commencent à l'indice 0.
 Appuie-toi d'abord sur les extraits du cours fournis. Si la question n'a aucun rapport avec l'algorithmique, dis-le poliment.
 Ne donne pas directement la solution complète d'un exercice : donne des pistes, sauf si l'élève la demande explicitement.`;
+// Les petits modèles peuvent se mettre à répéter la même phrase en boucle.
+// Si la fin du texte est déjà apparue plus haut, on coupe après la première occurrence.
+function cutLoop(t){
+  if(t.length < 160) return null;
+  const tail = t.slice(-60), first = t.indexOf(tail);
+  if(first < 0 || first >= t.length - 60) return null;
+  const cut = t.slice(0, first + 60);
+  const end = Math.max(cut.lastIndexOf(". "), cut.lastIndexOf(".\n"), cut.lastIndexOf("! "), cut.lastIndexOf("? "));
+  return end > 40 ? cut.slice(0, end + 1) : cut;
+}
 async function aiAnswer(m, hits, runInfo, el){
   const ctx = hits.slice(0,3).map(h=>`### ${h.d.title}\n${h.d.text.slice(0,700)}`).join("\n\n");
-  const hist = CHAT.log.filter(x=>x.plain).slice(-6).map(x=>({role:x.role, content:x.plain}));
+  // historique court, sans les réponses ratées (qui pousseraient le modèle à recommencer)
+  const hist = CHAT.log.filter(x=>x.plain && !x.bad).slice(-4).map(x=>({role:x.role, content:x.plain.slice(0,800)}));
   const user = `Extraits du cours :\n${ctx||"(aucun extrait trouvé)"}\n${runInfo?`\nRésultat de l'exécution du code de l'élève : ${runInfo}\n`:""}\nQuestion de l'élève : ${m}`;
-  let txt = "";
-  const chunks = await CHAT.engine.chat.completions.create({messages:[{role:"system",content:SYSTEM}, ...hist, {role:"user",content:user}], stream:true, temperature:0.3, max_tokens:600});
-  for await (const c of chunks){ txt += c.choices[0]?.delta?.content || ""; el.innerHTML = md(txt) + `<span class="cursor">▍</span>`; scrollChat(); }
-  return txt;
+  const messages = [{role:"system",content:SYSTEM}, ...hist, {role:"user",content:user}];
+  const base = {messages, stream:true, temperature:0.4, top_p:0.9, max_tokens:400};
+  let chunks;
+  try { chunks = await CHAT.engine.chat.completions.create({...base, repetition_penalty:1.15, frequency_penalty:0.5, presence_penalty:0.3}); }
+  catch(e){ chunks = await CHAT.engine.chat.completions.create(base); } // si ces réglages ne sont pas acceptés
+  let txt = "", looped = false, stopped = false;
+  for await (const c of chunks){
+    txt += c.choices[0]?.delta?.content || "";
+    const cut = cutLoop(txt);
+    if(cut !== null){ txt = cut; looped = true; }
+    if(looped || CHAT.stop){ stopped = CHAT.stop; try{ CHAT.engine.interruptGenerate(); }catch{} break; }
+    el.innerHTML = md(txt) + `<span class="cursor">▍</span>`; scrollChat();
+  }
+  return {txt: txt.trim(), looped, stopped};
 }
 function md(s){
   const blocks = [];
@@ -158,7 +179,7 @@ function chat(){
   if(!CHAT.log.length) CHAT.log.push({role:"assistant", html:`<p>Salut ! Je connais tout le cours d'AlgoMaster. Exemples : « c'est quoi un cas de base ? », « pourquoi ma boucle est infinie ? », ou colle un algorithme complet.</p>`});
   CHAT.log.forEach(drawMsg);
   const inp = $("#chat-in");
-  $("#chat-form").onsubmit = ev => { ev.preventDefault(); send(inp.value); };
+  $("#chat-form").onsubmit = ev => { ev.preventDefault(); if(CHAT.busy && CHAT.engine) CHAT.stop = true; else send(inp.value); };
   inp.addEventListener("keydown", ev => { if(ev.key==="Enter" && !ev.shiftKey){ ev.preventDefault(); send(inp.value); } });
   const onChip = ev => { const c = ev.target.closest(".chip"); if(c) send(c.dataset.q); };
   $("#chat-log").onclick = onChip; $("#chat-sugg").onclick = onChip;
@@ -175,20 +196,25 @@ const scrollChat = () => { const m = $("#main"); if(m) m.scrollTop = m.scrollHei
 async function send(text){
   text = (text||"").trim();
   if(!text || CHAT.busy || !$("#chat-log")) return;
-  CHAT.busy = true; $("#chat-in").value = ""; $("#chat-send").disabled = true;
+  CHAT.busy = true; CHAT.stop = false; $("#chat-in").value = "";
+  const sendBtn = $("#chat-send");
+  if(CHAT.engine) sendBtn.textContent = "■ Arrêter"; else sendBtn.disabled = true;
   const code = looksLikeCode(text);
+  const small = !code && SMALL.some(([re])=>re.test(text)); // salutations : réponse directe, sans l'IA
   const u = {role:"user", text, code, plain:text}; CHAT.log.push(u); drawMsg(u);
   const hits = search(code ? text.replace(/[←<\-"]/g," ") : text);
   const run = code ? runSnippet(text) : null;
   const bot = {role:"assistant", html:""}; CHAT.log.push(bot);
   const el = drawMsg(bot);
   try{
-    if(CHAT.engine){
+    if(CHAT.engine && !small){
       el.innerHTML = `<span class="cursor">▍</span>`;
-      const ans = await aiAnswer(text, hits, run && run.text, el);
+      const {txt, looped, stopped} = await aiAnswer(text, hits, run && run.text, el);
       const src = hits.filter(h=>h.d.lesson).slice(0,2);
-      bot.plain = ans;
-      bot.html = (run?`<p class="lbl">Exécution de ton code :</p>${run.html}`:"") + md(ans)
+      bot.plain = txt; bot.bad = looped || !txt;
+      const runHtml = run ? `<p class="lbl">Exécution de ton code :</p>${run.html}` : "";
+      if(bot.bad) bot.html = runHtml + (txt?md(txt):"") + `<div class="errbox">L'IA s'est mise à tourner en rond, je l'ai arrêtée. Voici ce que dit le cours :</div>` + courseAnswer(text, hits);
+      else bot.html = runHtml + md(txt) + (stopped?`<p class="note">(réponse arrêtée)</p>`:"")
         + (src.length?`<p class="lbl" style="margin-top:8px">📚 Pour réviser : ${src.map(h=>`<a onclick="go('cours','${h.d.lesson}')">${esc(h.d.title)}</a>`).join(" · ")}</p>`:"");
     } else {
       bot.html = run ? `<p class="lbl">Exécution de ton code :</p>${run.html}` : courseAnswer(text, hits);
@@ -197,5 +223,6 @@ async function send(text){
     bot.html = `<div class="errbox">L'IA a rencontré un problème (${esc(e.message||e)}). Voici ce que dit le cours :</div>` + courseAnswer(text, hits);
   }
   if(el){ el.innerHTML = bot.html; enhance(); scrollChat(); }
-  CHAT.busy = false; const sb = $("#chat-send"); if(sb) sb.disabled = false;
+  CHAT.busy = false; CHAT.stop = false;
+  const sb = $("#chat-send"); if(sb){ sb.disabled = false; sb.textContent = "Envoyer"; }
 }
