@@ -1,76 +1,66 @@
 <div align="center">
 
-# 🧠 AlgoMaster
+# AlgoMaster
 
-**Apprends l'algorithmique de zéro, directement dans ton navigateur.**
+Cours d'algorithmique interactif pour débutants, qui tourne entièrement dans le navigateur.
 
-Leçons interactives · Quiz · Flashcards · Examen blanc · Atelier de pseudo-code
+[![Démo](https://img.shields.io/badge/démo-en%20ligne-2ea44f?logo=githubpages&logoColor=white)](https://mldv-ssh.github.io/algomaster/)
+[![Last commit](https://img.shields.io/github/last-commit/mldv-ssh/algomaster?color=blue)](https://github.com/mldv-ssh/algomaster/commits)
+![Dépendances](https://img.shields.io/badge/dépendances-0-success)
 
-[![Essayer en ligne](https://img.shields.io/badge/▶_Essayer-en_ligne-2ea44f?style=for-the-badge)](https://mldv-ssh.github.io/algomaster/)
-![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-![Zéro dépendance](https://img.shields.io/badge/dépendances-0-blue?style=for-the-badge)
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)
+![C#](https://img.shields.io/badge/C%23-512BD4?logo=dotnet&logoColor=white)
+![PowerShell](https://img.shields.io/badge/PowerShell-5391FE?logo=powershell&logoColor=white)
 
 **[mldv-ssh.github.io/algomaster](https://mldv-ssh.github.io/algomaster/)**
 
 </div>
 
----
+## Fonctionnalités
 
-## ✨ Fonctionnalités
+- Leçons avec exécution des algorithmes pas à pas
+- Quiz corrigés instantanément, avec des questions générées aléatoirement
+- Flashcards et fiche résumé
+- Examen blanc
+- Atelier de pseudo-code : le code est exécuté par un interpréteur intégré et vérifié sur des jeux de tests
+- Progression sauvegardée en local (`localStorage`)
 
-| | Module | Ce qu'il fait |
-|---|---|---|
-| 📖 | **Leçons** | Chaque notion expliquée avec une exécution **pas à pas** de l'algorithme |
-| ✅ | **Quiz** | Questions corrigées **instantanément**, dont des questions générées aléatoirement |
-| 🃏 | **Flashcards** | Révision rapide des définitions et concepts clés |
-| 📝 | **Examen blanc** | Mise en situation complète pour tester ses acquis |
-| 💻 | **Atelier pseudo-code** | Écris ton algorithme : un interpréteur l'exécute sur des jeux de tests et le **corrige automatiquement** |
-| 💾 | **Progression** | Sauvegardée dans ton navigateur (`localStorage`), sans compte |
+Aucun serveur, aucune dépendance : l'application complète est un seul fichier `index.html`.
 
-## 🚀 Utilisation
-
-**En ligne** : [mldv-ssh.github.io/algomaster](https://mldv-ssh.github.io/algomaster/)
-
-**En local** : tout tient dans un seul fichier `index.html`, sans serveur ni dépendance.
+## Lancer en local
 
 ```bash
 git clone https://github.com/mldv-ssh/algomaster.git
 ```
 
-Puis ouvre `index.html` dans un navigateur. C'est tout.
+Ouvrir ensuite `index.html` dans un navigateur.
 
-## 📂 Structure
+## Structure
 
 ```
-algomaster/
-├── index.html        # application complète, générée par build.ps1
-├── build.ps1         # script de build (Windows)
-└── src/
-    ├── course.js     # catégories, leçons, traces pas à pas, fiche résumé, flashcards
-    ├── questions.js  # questions des quiz et générateurs aléatoires
-    ├── exos.js       # exercices de l'atelier et jeux de tests
-    ├── interp.js     # interpréteur de pseudo-code qui corrige l'atelier
-    ├── app.js        # interface
-    ├── style.css     # style
-    ├── index.html    # gabarit
-    └── Launcher.cs   # lanceur Windows AlgoMaster.exe
+src/
+├── course.js      catégories, leçons, traces pas à pas, fiche résumé, flashcards
+├── questions.js   questions des quiz et générateurs aléatoires
+├── exos.js        exercices de l'atelier et jeux de tests
+├── interp.js      interpréteur de pseudo-code
+├── app.js         interface
+├── style.css
+├── index.html     gabarit
+└── Launcher.cs    lanceur Windows (AlgoMaster.exe)
+build.ps1          script de build
+index.html         fichier généré, servi par GitHub Pages
 ```
 
-## 🛠️ Modifier le contenu
+## Build
 
-1. Modifie les fichiers dans `src/`.
-2. Lance le build :
+Les sources sont dans `src/`. Après une modification :
 
-   ```powershell
-   powershell -ExecutionPolicy Bypass -File build.ps1
-   ```
+```powershell
+powershell -ExecutionPolicy Bypass -File build.ps1
+```
 
-   Il régénère `index.html`, puis crée `AlgoMaster.exe` et `AlgoMaster.html` sur le Bureau.
-3. Commit et push `index.html` : GitHub Pages met le site à jour.
+Le script régénère `index.html` et crée `AlgoMaster.exe` et `AlgoMaster.html` sur le Bureau.
 
----
-
-<div align="center">
-Fait avec ☕ pour apprendre l'algo sans prise de tête.
-</div>
+Le site est déployé via GitHub Pages : pousser `index.html` suffit à le mettre à jour.
