@@ -271,7 +271,9 @@ const CATS = {
   conditions: {name:"Conditions",              icon:"🔀", part:1},
   boucles:    {name:"Boucles",                 icon:"🔁", part:2},
   classiques: {name:"Algorithmes classiques",  icon:"🏛️", part:2},
+  recursivite:{name:"Récursivité",            icon:"🪆", part:2},
   tableaux:   {name:"Tableaux",                icon:"🗂️", part:2},
+  tris:       {name:"Algorithmes de tri",      icon:"🔃", part:2},
   complexite: {name:"Complexité",              icon:"⏱️", part:2},
   fonctions:  {name:"Fonctions & modularité",  icon:"🧩", part:3},
 };
@@ -303,6 +305,42 @@ const TRACES = {
     code:["Début","  a ← 48","  b ← 18","  TantQue b ≠ 0 Faire","    r ← a MOD b","    a ← b","    b ← r","  FinTantQue","  Afficher a","Fin"],
     steps:[{l:0,v:{}},{l:1,v:{a:48}},{l:2,v:{a:48,b:18}},{l:3,v:{a:48,b:18},n:"18 ≠ 0 → on continue"},{l:4,v:{a:48,b:18,r:12},n:"48 MOD 18 = 12"},{l:5,v:{a:18,b:18,r:12}},{l:6,v:{a:18,b:12,r:12}},{l:3,v:{a:18,b:12,r:12},n:"12 ≠ 0"},{l:4,v:{a:18,b:12,r:6},n:"18 MOD 12 = 6"},{l:5,v:{a:12,b:12,r:6}},{l:6,v:{a:12,b:6,r:6}},{l:3,v:{a:12,b:6,r:6},n:"6 ≠ 0"},{l:4,v:{a:12,b:6,r:0},n:"12 MOD 6 = 0"},{l:5,v:{a:6,b:6,r:0}},{l:6,v:{a:6,b:0,r:0}},{l:3,v:{a:6,b:0,r:0},n:"b = 0 → on sort"},{l:8,v:{a:6,b:0,r:0},o:"6"},{l:9,v:{a:6,b:0,r:0},o:"6"}]
   }
+};
+
+TRACES.factrec = {
+  code:["Fonction Fact(n) : entier","  Si n <= 1 Alors","    Retourner 1","  FinSi","  Retourner n * Fact(n - 1)","FinFonction"],
+  steps:[
+    {l:0,v:{pile:"Fact(3)",n:3},n:"On appelle Fact(3)"},
+    {l:1,v:{pile:"Fact(3)",n:3},n:"3 <= 1 ? FAUX"},
+    {l:4,v:{pile:"Fact(3)",n:3},n:"Pour calculer 3 × Fact(2), il faut d'abord Fact(2) : nouvel appel"},
+    {l:0,v:{pile:"Fact(3) → Fact(2)",n:2}},
+    {l:1,v:{pile:"Fact(3) → Fact(2)",n:2},n:"2 <= 1 ? FAUX"},
+    {l:4,v:{pile:"Fact(3) → Fact(2)",n:2},n:"Il faut Fact(1) : nouvel appel"},
+    {l:0,v:{pile:"Fact(3) → Fact(2) → Fact(1)",n:1}},
+    {l:1,v:{pile:"Fact(3) → Fact(2) → Fact(1)",n:1},n:"1 <= 1 ? VRAI : c'est le cas de base"},
+    {l:2,v:{pile:"Fact(3) → Fact(2) → Fact(1)",n:1},n:"Fact(1) retourne 1. On remonte !"},
+    {l:4,v:{pile:"Fact(3) → Fact(2)",n:2},n:"Fact(2) = 2 × Fact(1) = 2 × 1 = 2"},
+    {l:4,v:{pile:"Fact(3)",n:3},n:"Fact(3) = 3 × Fact(2) = 3 × 2 = 6"},
+    {l:5,v:{"résultat":6},o:"6"}]
+};
+TRACES.bulles = {
+  code:["Début","  T ← [3, 1, 2]","  Pour i ← 0 à N - 2 Faire","    Pour j ← 0 à N - i - 2 Faire","      Si T[j] > T[j + 1] Alors","        Temp ← T[j]","        T[j] ← T[j + 1]","        T[j + 1] ← Temp","      FinSi","    FinPour","  FinPour","  Afficher T","Fin"],
+  steps:[
+    {l:1,v:{T:"[3, 1, 2]",N:3}},
+    {l:2,v:{T:"[3, 1, 2]",i:0},n:"1er passage"},
+    {l:3,v:{T:"[3, 1, 2]",i:0,j:0}},
+    {l:4,v:{T:"[3, 1, 2]",i:0,j:0},n:"T[0]=3 > T[1]=1 ? VRAI → on échange"},
+    {l:5,v:{T:"[3, 1, 2]",i:0,j:0,Temp:3}},
+    {l:6,v:{T:"[1, 1, 2]",i:0,j:0,Temp:3}},
+    {l:7,v:{T:"[1, 3, 2]",i:0,j:0,Temp:3}},
+    {l:3,v:{T:"[1, 3, 2]",i:0,j:1}},
+    {l:4,v:{T:"[1, 3, 2]",i:0,j:1},n:"T[1]=3 > T[2]=2 ? VRAI → on échange"},
+    {l:7,v:{T:"[1, 2, 3]",i:0,j:1,Temp:3},n:"Le plus grand (3) est arrivé à la fin"},
+    {l:2,v:{T:"[1, 2, 3]",i:1},n:"2e passage (un voisin de moins à comparer)"},
+    {l:3,v:{T:"[1, 2, 3]",i:1,j:0}},
+    {l:4,v:{T:"[1, 2, 3]",i:1,j:0},n:"T[0]=1 > T[1]=2 ? FAUX → rien"},
+    {l:11,v:{T:"[1, 2, 3]"},o:"[1, 2, 3]"},
+    {l:12,v:{T:"[1, 2, 3]"},o:"[1, 2, 3]"}]
 };
 
 // ================== LEÇONS ==================
@@ -773,6 +811,59 @@ Pour i allant de 1 à 50 Faire
 FinPour
 Afficher compteur      // 25</pre>
 `},
+{id:"l11r", part:2, cat:"recursivite", title:"Les algorithmes récursifs", html:`
+<div class="box def"><b class="t">📘 Récursivité</b>Un algorithme est <b>récursif</b> lorsqu'une fonction ou une procédure <b>s'appelle elle-même</b> pour résoudre un problème.</div>
+<div class="analogy">Des <b>poupées russes</b> : pour atteindre la plus petite, tu ouvres une poupée, qui contient une poupée plus petite, et ainsi de suite… jusqu'à la dernière, qui ne s'ouvre pas. C'est le <b>cas de base</b>.</div>
+<h3>Les 2 éléments obligatoires</h3>
+<ul><li><b>Un cas de base</b> : la condition qui <b>arrête</b> les appels récursifs.</li>
+<li><b>Un appel récursif</b> : la fonction s'appelle avec un problème <b>plus simple</b> (plus petit).</li></ul>
+<h3>Exemple du cours : la factorielle récursive</h3>
+<p>Le cours l'écrit ainsi (style Python) :</p>
+<pre class="code">Entrée : Entier n
+Sortie : Entier
+if n <= 1:
+    return 1
+return n * factorielle(n - 1)</pre>
+<p>Le même algorithme en pseudo-code :</p>
+<pre class="code">Fonction Factorielle(n : entier) : entier
+   Si n <= 1 Alors
+      Retourner 1                      // cas de base
+   FinSi
+   Retourner n * Factorielle(n - 1)    // appel récursif (problème plus simple)
+FinFonction</pre>
+<p>L'idée : 4! = 4 × 3!, et 3! = 3 × 2!, etc. On ramène le problème à un problème plus petit, jusqu'à 1! = 1.</p>
+<h3>▶️ Regarde les appels s'empiler puis se dépiler</h3>
+<div data-trace="factrec"></div>
+<table class="t"><tr><th>Phase</th><th>Ce qui se passe pour Fact(4)</th></tr>
+<tr><td>Descente</td><td>Fact(4) → Fact(3) → Fact(2) → Fact(1)</td></tr>
+<tr><td>Cas de base</td><td>Fact(1) = 1</td></tr>
+<tr><td>Remontée</td><td>Fact(2) = 2 × 1 = 2 → Fact(3) = 3 × 2 = 6 → Fact(4) = 4 × 6 = <b>24</b></td></tr></table>
+<div class="box warn"><b class="t">⚠️ Les 2 erreurs classiques</b>
+<ul><li><b>Pas de cas de base</b> : la fonction s'appelle à l'infini, jusqu'au plantage (« dépassement de pile »).</li>
+<li><b>Le problème ne devient pas plus simple</b> : <code>Retourner n * Factorielle(n + 1)</code> s'éloigne du cas de base, le résultat est le même plantage.</li></ul></div>
+<h3>D'autres exemples</h3>
+<pre class="code">// Somme 1 + 2 + … + n
+Fonction Somme(n : entier) : entier
+   Si n = 0 Alors
+      Retourner 0
+   FinSi
+   Retourner n + Somme(n - 1)
+FinFonction
+
+// Puissance x^n
+Fonction Puissance(x, n : entier) : entier
+   Si n = 0 Alors
+      Retourner 1
+   FinSi
+   Retourner x * Puissance(x, n - 1)
+FinFonction</pre>
+<h3>Récursif ou itératif (avec une boucle) ?</h3>
+<table class="t"><tr><th></th><th>Itératif (boucle)</th><th>Récursif</th></tr>
+<tr><td>Outil</td><td>Pour / TantQue</td><td>La fonction s'appelle elle-même</td></tr>
+<tr><td>Arrêt</td><td>condition de la boucle</td><td>cas de base</td></tr>
+<tr><td>Avantage</td><td>économe en mémoire</td><td>code court, proche de la définition mathématique</td></tr></table>
+<div class="box def"><b class="t">À retenir</b>Un algorithme récursif = un <b>cas de base</b> qui arrête + un <b>appel récursif</b> sur un problème <b>plus simple</b>. Tout ce qu'on fait en récursif peut aussi s'écrire avec une boucle.</div>
+`},
 {id:"l12", part:2, cat:"tableaux", title:"Les tableaux", html:`
 <div class="box def"><b class="t">📘 Tableau</b>Un tableau permet de stocker <b>plusieurs valeurs</b> dans une <b>seule variable</b>, chaque valeur étant accessible grâce à sa <b>position</b> (son <b>indice</b>).</div>
 <pre class="code">Notes ← [12, 15, 8, 17, 14]</pre>
@@ -841,6 +932,12 @@ Fin</pre>
   FinPour
   Afficher compteur        // 4
 Fin</pre>
+<h3>🛠️ Ateliers pratiques du cours</h3>
+<p>Le cours propose plusieurs ateliers à résoudre <b>dans un même algorithme</b> (tu les retrouves dans l'Atelier code, corrigés automatiquement) :</p>
+<ul><li><b>Chiffre d'affaires sur 30 jours</b> : total, jour des meilleures ventes, nombre de jours au-dessus de 1 000 €.</li>
+<li><b>Recherche dans 20 nombres</b> : la valeur existe-t-elle ? à quelles positions ? combien de fois ?</li>
+<li><b>Présences de 25 étudiants</b> (1 = présent, 0 = absent) : présents, absents, taux de présence, objectif de 80 %.</li>
+<li><b>Ordre du tableau</b> : croissant, décroissant ou non trié ?</li></ul>
 <h3>Rechercher une valeur</h3>
 <p>Pour savoir si une valeur est dans le tableau, on est <b>obligé de parcourir</b> le tableau. Complexité : <b>O(n)</b>, car tous les éléments peuvent devoir être examinés.</p>
 <pre class="code">trouve ← FAUX
@@ -850,6 +947,71 @@ Pour i allant de 0 à taille(T) - 1
    FinSi
 FinPour
 Afficher trouve</pre>
+`},
+{id:"l12t", part:2, cat:"tris", title:"Les algorithmes de tri", html:`
+<div class="box def"><b class="t">📘 Objectif d'un tri</b>Réorganiser les éléments d'un tableau dans un <b>ordre donné</b>, généralement <b>croissant</b> ou <b>décroissant</b>.</div>
+<h3>1. Le tri à bulles (Bubble Sort)</h3>
+<ul><li>Comparer deux éléments <b>voisins</b>.</li>
+<li>Les <b>échanger</b> si le premier est supérieur au second.</li>
+<li><b>Répéter</b> les passages jusqu'à obtenir un tableau trié.</li>
+<li>Les plus <b>grandes</b> valeurs <b>remontent</b> progressivement vers la <b>fin</b> du tableau (comme des bulles).</li></ul>
+<pre class="code">Début
+   Pour i ← 0 à N - 2 Faire
+      Pour j ← 0 à N - i - 2 Faire
+         Si T[j] > T[j + 1] Alors
+            Temp ← T[j]
+            T[j] ← T[j + 1]
+            T[j + 1] ← Temp
+         FinSi
+      FinPour
+   FinPour
+   Afficher T
+Fin</pre>
+<p><b>N</b> est la taille du tableau. Les 3 lignes avec <code>Temp</code> font l'<b>échange</b> de deux cases (comme l'échange de deux variables).</p>
+<h3>▶️ Le tri à bulles pas à pas</h3>
+<div data-trace="bulles"></div>
+<p>Exemple sur <code>[5, 1, 4, 2, 8]</code> :</p>
+<table class="t"><tr><th>Passage</th><th>Tableau après le passage</th><th>Remarque</th></tr>
+<tr><td>Départ</td><td>[5, 1, 4, 2, 8]</td><td></td></tr>
+<tr><td>1</td><td>[1, 4, 2, 5, 8]</td><td>5 a « remonté » jusqu'à 8</td></tr>
+<tr><td>2</td><td>[1, 2, 4, 5, 8]</td><td>4 et 2 échangés</td></tr>
+<tr><td>3 et 4</td><td>[1, 2, 4, 5, 8]</td><td>plus aucun échange : trié</td></tr></table>
+<div class="box tip"><b class="t">💡 Pourquoi N - i - 2 ?</b>Après chaque passage, le plus grand élément restant est à sa place définitive à la fin : inutile de le comparer à nouveau. On compare donc un voisin de moins à chaque passage.</div>
+<h3>2. Le tri par sélection (Selection Sort)</h3>
+<ul><li><b>Rechercher le plus petit</b> élément dans la partie <b>non triée</b> du tableau.</li>
+<li>Le <b>placer au début</b> de cette partie en l'échangeant avec le premier élément.</li>
+<li>Répéter jusqu'à ce que le tableau soit trié.</li>
+<li>Les plus <b>petites</b> valeurs sont placées progressivement au <b>début</b> du tableau.</li></ul>
+<pre class="code">Début
+   Pour i ← 0 à N - 2 Faire
+      IndiceMin ← i
+      Pour j ← i + 1 à N - 1 Faire
+         Si T[j] < T[IndiceMin] Alors
+            IndiceMin ← j
+         FinSi
+      FinPour
+      Temp ← T[i]
+      T[i] ← T[IndiceMin]
+      T[IndiceMin] ← Temp
+   FinPour
+   Afficher T
+Fin</pre>
+<table class="t"><tr><th>Étape (i)</th><th>Minimum trouvé</th><th>Tableau après l'échange</th></tr>
+<tr><td>Départ</td><td></td><td>[5, 1, 4, 2, 8]</td></tr>
+<tr><td>0</td><td>1 (indice 1)</td><td>[<b>1</b>, 5, 4, 2, 8]</td></tr>
+<tr><td>1</td><td>2 (indice 3)</td><td>[1, <b>2</b>, 4, 5, 8]</td></tr>
+<tr><td>2</td><td>4 (déjà en place)</td><td>[1, 2, <b>4</b>, 5, 8]</td></tr>
+<tr><td>3</td><td>5 (déjà en place)</td><td>[1, 2, 4, <b>5</b>, 8]</td></tr></table>
+<div class="box def"><b class="t">À retenir (cours)</b>Le tri à bulles <b>compare les voisins</b>, tandis que le tri par sélection <b>recherche le minimum</b>. Les deux utilisent deux boucles imbriquées : complexité <b>O(N²)</b>.</div>
+<h3>Vérifier si un tableau est trié</h3>
+<p>Atelier du cours : un tableau est trié par ordre croissant si chaque élément est inférieur ou égal à son voisin de droite.</p>
+<pre class="code">croissant ← VRAI
+Pour i ← 0 à taille(T) - 2 Faire
+   Si T[i] > T[i + 1] Alors
+      croissant ← FAUX
+   FinSi
+FinPour</pre>
+<div class="box warn"><b class="t">⚠️ Borne</b>On s'arrête à <code>taille(T) - 2</code> car on lit <code>T[i + 1]</code> : avec <code>taille(T) - 1</code>, le dernier tour lirait une case qui n'existe pas.</div>
 `},
 {id:"l13", part:2, cat:"complexite", title:"La complexité algorithmique", html:`
 <div class="box def"><b class="t">📘 Complexité</b>La complexité algorithmique est la <b>quantité de ressources</b> (temps, mémoire…) qu'un algorithme consomme <b>en fonction de la taille de ses données d'entrée</b>.</div>
@@ -1083,6 +1245,8 @@ const FICHE = `
 <div class="card"><h3>🐞 Erreurs de boucle</h3>Boucle <b>infinie</b> (variable jamais modifiée)<br><b>Off-by-one</b> (&lt; au lieu de &lt;=, taille au lieu de taille−1)<br>Mauvaise modif. de la variable de contrôle<br>Confusion TantQue / Répéter</div>
 <div class="card"><h3>🏛️ Classiques</h3><b>Somme</b> : s ← 0 ; s ← s + i<br><b>Factorielle</b> : f ← 1 ; f ← f * i ; 5! = 120 ; 0! = 1<br><b>PGCD</b> (Euclide) : TantQue b ≠ 0 : r ← a MOD b ; a ← b ; b ← r → résultat a</div>
 <div class="card"><h3>🗂️ Tableaux</h3><code>T ← [12, 15, 8]</code> · indices de <b>0</b> à <b>taille−1</b><br>T[taille] → <b>ERREUR</b><br>Parcours : <code>Pour i de 0 à taille(T) - 1</code><br>Min/max : initialiser à <b>T[0]</b>, boucle depuis 1<br>Recherche : O(n)</div>
+<div class="card"><h3>🪆 Récursivité</h3>Une fonction qui <b>s'appelle elle-même</b>.<br>Obligatoire : un <b>cas de base</b> (arrêt) + un <b>appel récursif</b> sur un problème <b>plus simple</b>.<br><code>Si n <= 1 Alors Retourner 1</code><br><code>Retourner n * Fact(n - 1)</code></div>
+<div class="card"><h3>🔃 Tris</h3><b>Bulles</b> : compare les <b>voisins</b>, échange si T[j] > T[j+1] ; les grands remontent à la fin.<br><b>Sélection</b> : cherche le <b>minimum</b> de la partie non triée, l'échange avec le 1er.<br>Échange : Temp ← a ; a ← b ; b ← Temp. Les deux : <b>O(N²)</b>.</div>
 <div class="card"><h3>⏱️ Complexité</h3>Ressources (temps, mémoire) en fonction de la taille <b>N</b>. On compte les <b>opérations</b> (indépendant de la machine).<br>O(1) constant · O(N) 1 boucle · O(N²) 2 boucles imbriquées (n=100 → 10 000)</div>
 <div class="card"><h3>🧩 Fonctions</h3>Nom + paramètres + traitement + retour.<br><code>Fonction F(a, b) : type … Retourner r FinFonction</code><br><b>Procédure</b> = sans retour.<br>Retourner ≠ Afficher. Variables internes = <b>locales</b>.<br>Modularité = découper en sous-fonctions.</div>
 </div>`;
@@ -1138,6 +1302,19 @@ const FLASH = [
 ["Afficher vs Retourner","Afficher montre à l'utilisateur. Retourner <b>renvoie</b> au programme appelant (réutilisable) et termine la fonction."],
 ["Qu'est-ce que la modularité ?","Diviser un problème complexe en <b>plusieurs fonctions simples</b>."],
 ["Variable locale ?","Variable déclarée dans une fonction, qui n'existe <b>que dans cette fonction</b>."],
+["Qu'est-ce qu'un algorithme récursif ?","Une fonction ou procédure qui <b>s'appelle elle-même</b> pour résoudre un problème."],
+["Les 2 éléments obligatoires d'un algorithme récursif","Un <b>cas de base</b> (arrête les appels) et un <b>appel récursif</b> sur un problème <b>plus simple</b>."],
+["Que se passe-t-il sans cas de base ?","Les appels ne s'arrêtent jamais : récursion infinie, puis plantage (dépassement de pile)."],
+["Factorielle récursive","Si n <= 1 : Retourner 1<br>Sinon : Retourner n × Factorielle(n − 1)"],
+["Objectif d'un algorithme de tri","Réorganiser les éléments d'un tableau dans un ordre donné (croissant ou décroissant)."],
+["Principe du tri à bulles","Comparer deux <b>voisins</b>, les échanger si le premier est plus grand, répéter les passages. Les grandes valeurs remontent à la fin."],
+["Principe du tri par sélection","Chercher le <b>minimum</b> de la partie non triée et l'échanger avec le premier élément de cette partie."],
+["Bulles vs sélection","Bulles : compare les <b>voisins</b>.<br>Sélection : recherche le <b>minimum</b>."],
+["Complexité du tri à bulles et du tri par sélection","<b>O(N²)</b> : deux boucles imbriquées."],
+["Échanger T[j] et T[j + 1]","Temp ← T[j]<br>T[j] ← T[j + 1]<br>T[j + 1] ← Temp"],
+["Comment savoir si un tableau est trié (croissant) ?","Vérifier que T[i] <= T[i + 1] pour tout i de 0 à taille − 2."],
+["Condition pour que a, b, c forment un triangle","a < b + c <b>ET</b> b < a + c <b>ET</b> c < a + b"],
+["Inverser les chiffres d'un nombre (palindrome)","inverse ← inverse × 10 + n MOD 10, puis n ← n DIV 10, tant que n > 0."],
 ["4 avantages des fonctions","Éviter la répétition · Décomposer un problème · Faciliter la lecture · Faciliter tests et corrections"],
 ];
 
@@ -1397,6 +1574,57 @@ VF("fonctions","Une fonction peut être appelée plusieurs fois.",true,"C'est to
 VF("fonctions","Une fonction peut appeler une autre fonction.",true,"Ex : SommeDesCarres appelle Carre.");
 VF("fonctions","Une variable locale d'une fonction est accessible dans le programme principal.",false,"Elle n'existe que dans la fonction.");
 
+// ===================== RÉCURSIVITÉ =====================
+Q("recursivite","Qu'est-ce qu'un algorithme récursif ?",["Une fonction ou procédure qui s'appelle elle-même","Une boucle TantQue","Un tableau à deux dimensions","Une fonction sans paramètre"],0,"Définition du cours : une fonction ou une procédure qui <b>s'appelle elle-même</b> pour résoudre un problème.");
+Q("recursivite","Quels sont les deux éléments obligatoires d'un algorithme récursif ?",["Un cas de base et un appel récursif","Une boucle et un tableau","Un compteur et un accumulateur","Un Lire et un Afficher"],0,"Le cas de base arrête les appels ; l'appel récursif traite un problème plus simple.");
+Q("recursivite","À quoi sert le cas de base ?",["À arrêter les appels récursifs","À lancer la récursion","À afficher le résultat","À déclarer les variables"],0,"C'est la condition qui permet d'arrêter les appels récursifs.");
+Q("recursivite","L'appel récursif doit porter sur…",["Un problème plus simple (plus petit)","Exactement le même problème","Un problème plus grand","Un tableau vide"],0,"Sinon on ne se rapproche jamais du cas de base.");
+Q("recursivite","Que se passe-t-il si une fonction récursive n'a pas de cas de base ?",["Elle s'appelle à l'infini, jusqu'au plantage","Elle retourne 0","Elle s'exécute une seule fois","Rien de spécial"],0,"Récursion infinie : la mémoire des appels (la pile) déborde.");
+Q("recursivite","Dans cette fonction, quel est le cas de base ?",["Si n <= 1 Alors Retourner 1","Retourner n * Factorielle(n - 1)","Fonction Factorielle(n)","FinFonction"],0,"C'est la branche qui retourne une valeur <b>sans</b> nouvel appel.","Fonction Factorielle(n : entier) : entier\n   Si n <= 1 Alors\n      Retourner 1\n   FinSi\n   Retourner n * Factorielle(n - 1)\nFinFonction");
+Q("recursivite","Quelle est l'erreur ?",["L'appel se fait sur n + 1 : on s'éloigne du cas de base","Il manque une boucle","Il faut retourner 0","Aucune erreur"],0,"Le problème doit devenir plus simple : il faut F(n - 1).","Fonction F(n : entier) : entier\n   Si n <= 1 Alors\n      Retourner 1\n   FinSi\n   Retourner n * F(n + 1)\nFinFonction");
+IN("recursivite","Que retourne Factorielle(4) ?",["24"],"4 × Factorielle(3) = 4 × 3 × 2 × 1 = 24.","Fonction Factorielle(n : entier) : entier\n   Si n <= 1 Alors\n      Retourner 1\n   FinSi\n   Retourner n * Factorielle(n - 1)\nFinFonction");
+IN("recursivite","Pour calculer Factorielle(5), combien d'appels à Factorielle sont faits au total (appel initial compris) ?",["5"],"F(5), F(4), F(3), F(2), F(1) : 5 appels. F(1) est le cas de base.","Fonction Factorielle(n : entier) : entier\n   Si n <= 1 Alors\n      Retourner 1\n   FinSi\n   Retourner n * Factorielle(n - 1)\nFinFonction");
+IN("recursivite","Que retourne S(4) ?",["10"],"S(4) = 4 + S(3) = 4 + 3 + 2 + 1 + S(0) = 10.","Fonction S(n : entier) : entier\n   Si n = 0 Alors\n      Retourner 0\n   FinSi\n   Retourner n + S(n - 1)\nFinFonction");
+VF("recursivite","Toute fonction récursive doit avoir un cas de base.",true,"Sans lui, les appels ne s'arrêtent jamais.");
+VF("recursivite","Un algorithme récursif ne peut pas s'écrire avec une boucle.",false,"La factorielle s'écrit aussi avec une boucle Pour (version itérative).");
+VF("recursivite","Dans l'appel récursif, le problème doit devenir plus simple.",true,"Pour se rapprocher du cas de base.");
+VF("recursivite","Une procédure peut être récursive.",true,"Le cours dit : « une fonction <b>ou une procédure</b> s'appelle elle-même ».");
+
+// ===================== TRIS =====================
+Q("tris","Quel est l'objectif d'un algorithme de tri ?",["Réorganiser les éléments d'un tableau dans un ordre donné","Supprimer les doublons","Chercher une valeur","Calculer la moyenne"],0,"Généralement l'ordre croissant ou décroissant.");
+Q("tris","Que compare le tri à bulles ?",["Deux éléments voisins","Chaque élément avec le minimum","Le premier et le dernier élément","Les indices pairs et impairs"],0,"Il compare T[j] et T[j + 1] et les échange s'ils sont mal rangés.");
+Q("tris","Que recherche le tri par sélection à chaque étape ?",["Le plus petit élément de la partie non triée","Deux voisins mal rangés","Le plus grand élément du tableau entier","La moyenne"],0,"Puis il l'échange avec le premier élément de la partie non triée.");
+Q("tris","Tri à bulles (croissant) : où vont les plus grandes valeurs ?",["Elles remontent vers la fin du tableau","Elles vont au début","Elles restent en place","Au milieu"],0,"Comme des bulles qui remontent à la surface.");
+Q("tris","Tri par sélection : quelles valeurs sont placées en premier ?",["Les plus petites, au début du tableau","Les plus grandes, à la fin","Les valeurs paires","Les valeurs du milieu"],0,"On place le minimum au début, puis le minimum du reste, etc.");
+Q("tris","Quelle est la complexité du tri à bulles ?",["O(N²)","O(N)","O(1)","O(log N)"],0,"Deux boucles imbriquées.");
+Q("tris","Quelle est la complexité du tri par sélection ?",["O(N²)","O(N)","O(1)","O(N³)"],0,"Deux boucles imbriquées, comme le tri à bulles.");
+Q("tris","À quoi sert la variable Temp ?",["À échanger deux cases sans perdre une valeur","À compter les passages","À stocker le minimum","À mesurer la température"],0,"Sans Temp, T[j] ← T[j + 1] écraserait l'ancienne valeur de T[j].","Temp ← T[j]\nT[j] ← T[j + 1]\nT[j + 1] ← Temp");
+Q("tris","Tri à bulles croissant : quand échange-t-on T[j] et T[j + 1] ?",["Si T[j] > T[j + 1]","Si T[j] < T[j + 1]","Si T[j] = T[j + 1]","Toujours"],0,"On échange quand le premier est plus grand que son voisin.");
+Q("tris","T = [5, 1, 4, 2, 8]. Que devient T après le PREMIER passage du tri à bulles ?",["[1, 4, 2, 5, 8]","[1, 2, 4, 5, 8]","[1, 5, 4, 2, 8]","[5, 1, 4, 2, 8]"],0,"5 est échangé avec 1, puis 4, puis 2 ; 5 et 8 sont déjà dans l'ordre.");
+Q("tris","T = [5, 1, 4, 2, 8]. Que devient T après la PREMIÈRE étape du tri par sélection ?",["[1, 5, 4, 2, 8]","[1, 4, 2, 5, 8]","[1, 2, 4, 5, 8]","[5, 1, 4, 2, 8]"],0,"Le minimum (1) est échangé avec le premier élément (5).");
+Q("tris","Comment vérifier qu'un tableau est trié par ordre croissant ?",["Vérifier que T[i] <= T[i + 1] pour chaque i","Vérifier que T[0] est le plus petit","Vérifier que la somme est positive","Vérifier que la taille est paire"],0,"Si un seul couple de voisins est mal rangé, le tableau n'est pas trié.");
+IN("tris","Tableau de 5 éléments : combien de comparaisons fait le tri à bulles du cours ?",["10"],"4 + 3 + 2 + 1 = 10, soit N(N − 1) / 2.");
+VF("tris","Le tri à bulles compare les voisins, le tri par sélection recherche le minimum.",true,"C'est le « à retenir » du cours.");
+VF("tris","Après le premier passage du tri à bulles, le plus grand élément est à la fin du tableau.",true,"Il est poussé de voisin en voisin jusqu'au bout.");
+VF("tris","Le tri par sélection fait au plus N − 1 échanges.",true,"Un échange par tour de la boucle externe (i de 0 à N − 2).");
+
+// ===================== AJOUTS (nouvelle version du cours) =====================
+Q("conditions","Trois longueurs a, b, c forment un triangle si…",["Chaque côté est plus petit que la somme des deux autres","a = b = c","a + b + c > 0","Le plus grand côté est pair"],0,"Inégalité triangulaire : a < b + c ET b < a + c ET c < a + b.");
+Q("conditions","Un triangle dont les trois côtés sont égaux est…",["Équilatéral","Isocèle","Quelconque","Rectangle"],0,"Trois côtés égaux : équilatéral.");
+Q("conditions","Un triangle avec exactement deux côtés égaux est…",["Isocèle","Équilatéral","Quelconque","Impossible"],0,"Deux côtés égaux : isocèle.");
+Q("conditions","Réduction : rien sous 100 €, 5 % de 100 à 199,99 €, 10 % dès 200 €. Achat de 150 € : réduction ?",["7,50 €","15 €","5 €","0 €"],0,"150 × 5 / 100 = 7,50 €.");
+Q("conditions","Même barème. Achat de 200 € : réduction ?",["20 €","10 €","0 €","5 €"],0,"À partir de 200 € : 10 % de 200 = 20 €.");
+VF("conditions","Le 29 février 2023 est une date valide.",false,"2023 n'est pas bissextile : février a 28 jours.");
+VF("conditions","Le 31 avril est une date valide.",false,"Avril a 30 jours.");
+Q("boucles","Quelle boucle est la plus adaptée pour redemander un mot de passe jusqu'à ce qu'il soit correct ?",["RÉPÉTER … JUSQU'À","POUR","SI … SINON","Aucune boucle"],0,"On demande au moins une fois et on ne sait pas combien d'essais il faudra.");
+IN("boucles","L'utilisateur saisit 5, 3, 2 puis 0. Que s'affiche-t-il ?",["10"],"On additionne jusqu'au 0, qui n'est pas compté : 5 + 3 + 2 = 10.","somme ← 0\nLire n\nTantQue n ≠ 0 Faire\n   somme ← somme + n\n   Lire n\nFinTantQue\nAfficher somme");
+IN("boucles","Combien de diviseurs a 12 ?",["6"],"1, 2, 3, 4, 6 et 12.");
+Q("boucles","Pour inverser un nombre (test de palindrome), à quoi sert n MOD 10 ?",["À récupérer le dernier chiffre","À supprimer le dernier chiffre","À compter les chiffres","À tester la parité"],0,"1234 MOD 10 = 4. Et 1234 DIV 10 = 123 enlève le dernier chiffre.");
+VF("boucles","1221 est un palindrome.",true,"Il se lit pareil dans les deux sens.");
+Q("tableaux","Pour trouver le JOUR des meilleures ventes, il faut retenir…",["L'indice du maximum (+ 1 pour le numéro du jour)","Seulement la valeur maximale","La moyenne","La taille du tableau"],0,"Le jour 1 correspond à l'indice 0.");
+IN("tableaux","P = [1, 0, 1, 1, 1] (1 = présent). Quel est le taux de présence en % ?",["80"],"4 présents sur 5 : 4 / 5 × 100 = 80 %.");
+IN("tableaux","T = [4, 7, 4, 1, 4]. Combien d'occurrences de 4 ?",["3"],"Aux positions 0, 2 et 4.");
+
 // ===================== GÉNÉRATEURS ALÉATOIRES =====================
 const R = (a,b) => Math.floor(Math.random()*(b-a+1))+a;
 const pick = a => a[Math.floor(Math.random()*a.length)];
@@ -1462,6 +1690,33 @@ const GENS = [
 ()=>{const st=pick([30,45,60,80,100,120,150,200]);const red=st>100?st*0.1:0,liv=st<50?5:0,m=+(st-red+liv).toFixed(2);return mkq("fonctions",`Panier : sous-total = ${st} €. Réduction 10 % si > 100 €, livraison 5 € si < 50 €. Montant final ?`,null,m,`Réduction : ${red} € ; livraison : ${liv} € → ${st} − ${red} + ${liv} = <b>${m} €</b>.`);},
 ()=>{const n=R(1,30);return {t:"vf",c:"fonctions",q:`EstPair(${n}) retourne VRAI.`,code:`Fonction EstPair(n : entier) : booléen\n   Retourner n MOD 2 = 0\nFinFonction`,a:n%2===0,e:`${n} MOD 2 = ${n%2} → <b>${n%2===0?"VRAI":"FAUX"}</b>.`,gen:1};},
 ];
+
+// ===================== GÉNÉRATEURS (nouvelle version du cours) =====================
+const uniq = (ans, others) => { const s=[String(ans)]; for(const x of others){ const v=String(x); if(!s.includes(v)) s.push(v); } return s.slice(0,4); };
+const fa = a => "[" + a.join(", ") + "]";
+const bubblePass = a => { a=[...a]; for(let j=0;j<a.length-1;j++) if(a[j]>a[j+1]) [a[j],a[j+1]]=[a[j+1],a[j]]; return a; };
+const selStep = a => { a=[...a]; let m=0; for(let j=1;j<a.length;j++) if(a[j]<a[m]) m=j; [a[0],a[m]]=[a[m],a[0]]; return a; };
+const randArr = n => { const s=new Set(); while(s.size<n) s.add(R(1,30)); return [...s]; };
+const shuffleArr = a => { for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const unsortedArr = n => { let a; do { a=shuffleArr(randArr(n)); } while(a.every((v,i)=>!i||a[i-1]<v)); return a; };
+GENS.push(
+()=>{ const T=unsortedArr(5), p=bubblePass(T); return {t:"qcm",c:"tris",q:`T = ${fa(T)}. Que devient T après le PREMIER passage du tri à bulles ?`,ch:uniq(fa(p),[fa([...T].sort((x,y)=>x-y)),fa(T),fa(selStep(T)),fa(bubblePass(p))]),a:0,e:`On compare chaque paire de voisins de gauche à droite et on échange si le premier est plus grand : <b>${fa(p)}</b>. Le maximum (${Math.max(...T)}) est arrivé à la fin.`,gen:1}; },
+()=>{ const T=unsortedArr(5), s=selStep(T); return {t:"qcm",c:"tris",q:`T = ${fa(T)}. Que devient T après la PREMIÈRE étape du tri par sélection ?`,ch:uniq(fa(s),[fa(bubblePass(T)),fa([...T].sort((x,y)=>x-y)),fa(T)]),a:0,e:`Le minimum (${Math.min(...T)}) est échangé avec le premier élément : <b>${fa(s)}</b>.`,gen:1}; },
+()=>{ const n=R(3,9); return mkq("tris",`Combien de comparaisons fait le tri à bulles du cours sur un tableau de ${n} éléments ?`,null,n*(n-1)/2,`(${n}−1) + (${n}−2) + … + 1 = ${n}×${n-1}/2 = <b>${n*(n-1)/2}</b>.`); },
+()=>{ let T=randArr(5); if(Math.random()<.4) T.sort((x,y)=>x-y); const ok=T.every((v,i)=>i===0||T[i-1]<=v); return {t:"vf",c:"tris",q:`Le tableau ${fa(T)} est trié par ordre croissant.`,a:ok,e:ok?"Chaque élément est inférieur ou égal à son voisin de droite.":`Au moins un couple de voisins est mal rangé (${T.find((v,i)=>i<T.length-1&&v>T[i+1])} est plus grand que son voisin de droite).`,gen:1}; },
+()=>{ const n=R(2,7); return mkq("recursivite","Que retourne Factorielle("+n+") ?","Fonction Factorielle(n : entier) : entier\n   Si n <= 1 Alors\n      Retourner 1\n   FinSi\n   Retourner n * Factorielle(n - 1)\nFinFonction",fact(n),`${n}! = ${Array.from({length:n},(_,k)=>n-k).join(" × ")} = <b>${fact(n)}</b>.`); },
+()=>{ const n=R(2,8); return mkq("recursivite",`Pour calculer Factorielle(${n}), combien d'appels à Factorielle sont faits au total ?`,"Fonction Factorielle(n : entier) : entier\n   Si n <= 1 Alors\n      Retourner 1\n   FinSi\n   Retourner n * Factorielle(n - 1)\nFinFonction",n,`F(${n}), F(${n-1}), …, F(1) : <b>${n}</b> appels ; F(1) est le cas de base.`); },
+()=>{ const n=R(3,10); return mkq("recursivite","Que retourne S("+n+") ?","Fonction S(n : entier) : entier\n   Si n = 0 Alors\n      Retourner 0\n   FinSi\n   Retourner n + S(n - 1)\nFinFonction",n*(n+1)/2,`S(${n}) = ${n} + ${n-1} + … + 1 + 0 = <b>${n*(n+1)/2}</b>.`); },
+()=>{ const x=R(2,5), n=R(0,5); return mkq("recursivite",`Que retourne P(${x}, ${n}) ?`,"Fonction P(x, n : entier) : entier\n   Si n = 0 Alors\n      Retourner 1\n   FinSi\n   Retourner x * P(x, n - 1)\nFinFonction",x**n,n?`${x} multiplié ${n} fois par lui-même = <b>${x**n}</b>.`:"n = 0 : cas de base, on retourne <b>1</b>."); },
+()=>{ const a=R(1,12),b=R(1,12),c=R(1,12); const ok=a<b+c&&b<a+c&&c<a+b; return {t:"vf",c:"conditions",q:`Les longueurs ${a}, ${b} et ${c} peuvent former un triangle.`,a:ok,e:`${a} < ${b+c} : ${a<b+c?"VRAI":"FAUX"} ; ${b} < ${a+c} : ${b<a+c?"VRAI":"FAUX"} ; ${c} < ${a+b} : ${c<a+b?"VRAI":"FAUX"} → <b>${ok?"VRAI":"FAUX"}</b>.`,gen:1}; },
+()=>{ const k=R(0,2), v=R(3,9); const s = k===0?[v,v,v] : k===1?shuffleArr([v,v,v+R(1,3)]) : [v,v+1,v+2+R(0,2)];
+  const t=s[0]===s[1]&&s[1]===s[2]?"Équilatéral":(s[0]===s[1]||s[1]===s[2]||s[0]===s[2])?"Isocèle":"Quelconque";
+  return {t:"qcm",c:"conditions",q:`Un triangle a pour côtés ${s.join(", ")}. Il est…`,ch:uniq(t,["Équilatéral","Isocèle","Quelconque"]),a:0,e:t==="Équilatéral"?"Trois côtés égaux.":t==="Isocèle"?"Exactement deux côtés égaux.":"Aucun côté égal.",gen:1}; },
+()=>{ const m=pick([40,80,99,100,120,150,180,199,200,250,320,500]); const r=+(m<100?0:m<200?m*0.05:m*0.1).toFixed(2); return mkq("conditions",`Réduction : rien sous 100 €, 5 % de 100 à 199,99 €, 10 % dès 200 €. Réduction pour un achat de ${m} € ?`,null,r,m<100?"Moins de 100 € : <b>0 €</b>.":`${m} × ${m<200?5:10} / 100 = <b>${r} €</b>.`); },
+()=>{ const n=R(6,40); const d=[]; for(let k=1;k<=n;k++) if(n%k===0) d.push(k); return mkq("boucles",`Combien de diviseurs a ${n} ?`,null,d.length,`Diviseurs de ${n} : ${d.join(", ")} → <b>${d.length}</b>.`); },
+()=>{ const L=Array.from({length:R(2,5)},()=>R(1,15)), s=L.reduce((x,y)=>x+y,0); return mkq("boucles","L'utilisateur saisit "+L.join(", ")+" puis 0. Que s'affiche-t-il ?","somme ← 0\nLire n\nTantQue n ≠ 0 Faire\n   somme ← somme + n\n   Lire n\nFinTantQue\nAfficher somme",s,`${L.join(" + ")} = <b>${s}</b> (le 0 arrête la boucle sans être compté).`); },
+()=>{ const T=Array.from({length:R(5,8)},()=>R(1,5)), x=R(1,5); const pos=T.map((v,i)=>v===x?i:-1).filter(i=>i>=0); return mkq("tableaux",`T = ${fa(T)}. Combien d'occurrences de ${x} ?`,null,pos.length,pos.length?`${x} apparaît aux positions ${pos.join(", ")} → <b>${pos.length}</b>.`:`${x} n'apparaît pas → <b>0</b>.`); },
+);
 
 ;
 // ================== INTERPRÉTEUR DE PSEUDO-CODE ==================
@@ -1977,6 +2232,76 @@ Fin`},
       Afficher "Non bissextile"
    FinSi
 Fin`},
+{id:"triangle",cat:"conditions",d:2,t:"Triangle possible ?",must:"si",
+ q:'Lire trois longueurs a, b et c. Afficher "Triangle possible" si elles peuvent former un triangle, sinon "Triangle impossible". (Exercice du cours.)',
+ h:["Inégalité triangulaire : chaque côté doit être plus petit que la somme des deux autres.","a < b + c ET b < a + c ET c < a + b"],
+ start:D0, tests:[{in:[3,4,5],out:["Triangle possible"]},{in:[1,2,10],out:["Triangle impossible"]},{in:[5,5,5],out:["Triangle possible"]},{in:[10,3,4],out:["Triangle impossible"]}],
+ s:`Début
+   Lire a
+   Lire b
+   Lire c
+   Si a < b + c ET b < a + c ET c < a + b Alors
+      Afficher "Triangle possible"
+   Sinon
+      Afficher "Triangle impossible"
+   FinSi
+Fin`},
+{id:"typetri",cat:"conditions",d:2,t:"Équilatéral, isocèle ou quelconque",must:"si",
+ q:'Lire les trois côtés a, b, c d\'un triangle. Afficher "Équilatéral" (3 côtés égaux), "Isocèle" (2 côtés égaux) ou "Quelconque". (Exercice du cours.)',
+ h:["Teste d'abord le cas le plus restrictif : les trois égaux.","Isocèle : a = b OU b = c OU a = c."],
+ start:D0, tests:[{in:[5,5,5],out:["Équilatéral"]},{in:[5,5,3],out:["Isocèle"]},{in:[3,5,5],out:["Isocèle"]},{in:[5,3,5],out:["Isocèle"]},{in:[3,4,5],out:["Quelconque"]}],
+ s:`Début
+   Lire a
+   Lire b
+   Lire c
+   Si a = b ET b = c Alors
+      Afficher "Équilatéral"
+   Sinon Si a = b OU b = c OU a = c Alors
+      Afficher "Isocèle"
+   Sinon
+      Afficher "Quelconque"
+   FinSi
+Fin`},
+{id:"reduc",cat:"conditions",d:2,t:"Réduction commerciale",must:"si",
+ q:"Lire le montant d'un achat et afficher le montant de la réduction : aucune sous 100 €, 5 % de 100 à 199,99 €, 10 % à partir de 200 €. (Exercice du cours.)",
+ h:["Trois tranches → Si … Sinon Si … Sinon.","5 % de montant = montant * 5 / 100"],
+ start:D0, tests:[{in:[50],out:[0]},{in:[100],out:[5]},{in:[150],out:[7.5]},{in:[200],out:[20]},{in:[320],out:[32]}],
+ s:`Début
+   Lire montant
+   Si montant < 100 Alors
+      reduction ← 0
+   Sinon Si montant < 200 Alors
+      reduction ← montant * 5 / 100
+   Sinon
+      reduction ← montant * 10 / 100
+   FinSi
+   Afficher reduction
+Fin`},
+{id:"datevalide",cat:"conditions",d:3,t:"Date valide",must:"si",
+ q:'Lire le jour, le mois puis l\'année. Afficher "Date valide" ou "Date invalide". Pense aux mois de 30 jours (4, 6, 9, 11) et à février (29 jours les années bissextiles, sinon 28). (Exercice du cours.)',
+ h:["Calcule d'abord le nombre de jours du mois dans une variable joursMax.","Février : réutilise la règle de l'année bissextile. Ensuite : mois entre 1 et 12 ET jour entre 1 et joursMax."],
+ start:D0, tests:[{in:[29,2,2024],out:["Date valide"]},{in:[29,2,2023],out:["Date invalide"]},{in:[31,4,2025],out:["Date invalide"]},{in:[31,12,2025],out:["Date valide"]},{in:[0,5,2025],out:["Date invalide"]},{in:[15,13,2025],out:["Date invalide"]}],
+ s:`Début
+   Lire jour
+   Lire mois
+   Lire annee
+   Si mois = 2 Alors
+      Si (annee MOD 4 = 0 ET annee MOD 100 ≠ 0) OU annee MOD 400 = 0 Alors
+         joursMax ← 29
+      Sinon
+         joursMax ← 28
+      FinSi
+   Sinon Si mois = 4 OU mois = 6 OU mois = 9 OU mois = 11 Alors
+      joursMax ← 30
+   Sinon
+      joursMax ← 31
+   FinSi
+   Si mois >= 1 ET mois <= 12 ET jour >= 1 ET jour <= joursMax Alors
+      Afficher "Date valide"
+   Sinon
+      Afficher "Date invalide"
+   FinSi
+Fin`},
 // ---------------------------------------------------------------- BOUCLES
 {id:"compte",cat:"boucles",d:1,t:"De 1 à 10 puis de 10 à 1",must:"boucle",
  q:"Afficher les nombres de 1 à 10 (un par ligne), puis de 10 à 1.",
@@ -2088,6 +2413,74 @@ Fin`},
    FinPour
    Afficher compteur
 Fin`},
+{id:"mdp",cat:"boucles",d:1,t:"Mot de passe",must:"boucle",
+ q:'Redemander un mot de passe (Lire) jusqu\'à ce que l\'utilisateur saisisse le bon : algo2026. Afficher ensuite "Accès autorisé". (Exercice du cours.)',
+ h:["Répéter … Jusqu'à mdp = \"algo2026\"","Un texte se compare entre guillemets."],
+ start:D0, tests:[{in:["abc","1234","algo2026"],out:["Accès autorisé"]},{in:["algo2026"],out:["Accès autorisé"]}],
+ s:`Début
+   Répéter
+      Afficher "Mot de passe :"
+      Lire mdp
+   Jusqu'à mdp = "algo2026"
+   Afficher "Accès autorisé"
+Fin`},
+{id:"somme0",cat:"boucles",d:2,t:"Somme jusqu'à 0",must:"boucle",
+ q:"Demander des nombres (Lire) jusqu'à ce que l'utilisateur saisisse 0, puis afficher la somme des nombres saisis (le 0 n'est pas compté). (Exercice du cours.)",
+ h:["Lis un premier nombre AVANT la boucle, puis TantQue n ≠ 0.","Dans la boucle : ajoute n à la somme, puis lis le nombre suivant."],
+ start:D0, tests:[{in:[5,3,2,0],out:[10]},{in:[0],out:[0]},{in:[-4,4,7,0],out:[7]}],
+ s:`Début
+   somme ← 0
+   Lire n
+   TantQue n ≠ 0 Faire
+      somme ← somme + n
+      Lire n
+   FinTantQue
+   Afficher somme
+Fin`},
+{id:"diviseurs",cat:"boucles",d:2,t:"Diviseurs d'un nombre",must:"boucle",
+ q:"Lire un entier positif n et afficher tous ses diviseurs, un par ligne, du plus petit au plus grand. (Exercice du cours : décomposition en facteurs.)",
+ h:["d est un diviseur de n si n MOD d = 0.","Teste tous les d de 1 à n."],
+ start:D0, tests:[{in:[12],out:[1,2,3,4,6,12]},{in:[7],out:[1,7]},{in:[1],out:[1]}],
+ s:`Début
+   Lire n
+   Pour d ← 1 à n Faire
+      Si n MOD d = 0 Alors
+         Afficher d
+      FinSi
+   FinPour
+Fin`},
+{id:"interets",cat:"boucles",d:3,t:"Intérêts bancaires",must:"boucle",
+ q:"Une somme est déposée sur un compte rémunéré à 3 % par an. Lire la somme et afficher le nombre d'années nécessaires pour gagner au moins 2 000 € de plus que la somme de départ. (Exercice du cours.)",
+ h:["Chaque année : capital ← capital * 1.03","TantQue capital - somme < 2000 : on ajoute une année."],
+ start:D0, tests:[{in:[10000],out:[7]},{in:[1000],out:[38]},{in:[50000],out:[2]}],
+ s:`Début
+   Lire somme
+   capital ← somme
+   annees ← 0
+   TantQue capital - somme < 2000 Faire
+      capital ← capital * 1.03
+      annees ← annees + 1
+   FinTantQue
+   Afficher annees
+Fin`},
+{id:"palindrome",cat:"boucles",d:3,t:"Nombre palindrome",must:"boucle",
+ q:'Lire un entier positif et afficher "Palindrome" s\'il se lit de la même façon dans les deux sens (ex : 1221), sinon "Pas palindrome". (Exercice du cours.)',
+ h:["Construis le nombre inversé : n MOD 10 donne le dernier chiffre, n DIV 10 l'enlève.","inverse ← inverse * 10 + reste MOD 10, puis reste ← reste DIV 10, TantQue reste > 0. Compare ensuite inverse et n."],
+ start:D0, tests:[{in:[1221],out:["Palindrome"]},{in:[123],out:["Pas palindrome"]},{in:[7],out:["Palindrome"]},{in:[10],out:["Pas palindrome"]},{in:[12321],out:["Palindrome"]}],
+ s:`Début
+   Lire n
+   reste ← n
+   inverse ← 0
+   TantQue reste > 0 Faire
+      inverse ← inverse * 10 + reste MOD 10
+      reste ← reste DIV 10
+   FinTantQue
+   Si inverse = n Alors
+      Afficher "Palindrome"
+   Sinon
+      Afficher "Pas palindrome"
+   FinSi
+Fin`},
 // ---------------------------------------------------------------- CLASSIQUES
 {id:"somme",cat:"classiques",d:1,t:"Somme de 1 à N",must:"boucle",
  q:"Lire N et afficher 1 + 2 + … + N.",
@@ -2158,6 +2551,67 @@ Fin`},
    FinPour
    Afficher p
 Fin`},
+// ---------------------------------------------------------------- RÉCURSIVITÉ
+{id:"factrec",cat:"recursivite",d:2,t:"Factorielle récursive",must:"recursif",
+ q:"Écrire la fonction récursive FactorielleRec(n) qui retourne n! (exemple du cours). Elle doit s'appeler elle-même.",
+ h:["Cas de base : si n <= 1, retourner 1.","Appel récursif : Retourner n * FactorielleRec(n - 1)"],
+ start:`Fonction FactorielleRec(n : entier) : entier
+   
+FinFonction`, tests:[{call:"FactorielleRec(5)",ret:120},{call:"FactorielleRec(1)",ret:1},{call:"FactorielleRec(0)",ret:1},{call:"FactorielleRec(7)",ret:5040}],
+ s:`Fonction FactorielleRec(n : entier) : entier
+   Si n <= 1 Alors
+      Retourner 1
+   FinSi
+   Retourner n * FactorielleRec(n - 1)
+FinFonction`},
+{id:"sommerec",cat:"recursivite",d:2,t:"Somme récursive",must:"recursif",
+ q:"Écrire la fonction récursive SommeRec(n) qui retourne 1 + 2 + … + n (et 0 si n = 0).",
+ h:["Cas de base : n = 0 → 0.","SommeRec(n) = n + SommeRec(n - 1)"],
+ start:`Fonction SommeRec(n : entier) : entier
+   
+FinFonction`, tests:[{call:"SommeRec(4)",ret:10},{call:"SommeRec(10)",ret:55},{call:"SommeRec(0)",ret:0}],
+ s:`Fonction SommeRec(n : entier) : entier
+   Si n = 0 Alors
+      Retourner 0
+   FinSi
+   Retourner n + SommeRec(n - 1)
+FinFonction`},
+{id:"puissrec",cat:"recursivite",d:2,t:"Puissance récursive",must:"recursif",
+ q:"Écrire la fonction récursive PuissanceRec(x, n) qui retourne x à la puissance n (n ≥ 0).",
+ h:["x⁰ = 1 : c'est le cas de base.","xⁿ = x × xⁿ⁻¹"],
+ start:`Fonction PuissanceRec(x : entier, n : entier) : entier
+   
+FinFonction`, tests:[{call:"PuissanceRec(2, 10)",ret:1024},{call:"PuissanceRec(5, 0)",ret:1},{call:"PuissanceRec(3, 3)",ret:27}],
+ s:`Fonction PuissanceRec(x : entier, n : entier) : entier
+   Si n = 0 Alors
+      Retourner 1
+   FinSi
+   Retourner x * PuissanceRec(x, n - 1)
+FinFonction`},
+{id:"rebrec",cat:"recursivite",d:2,t:"Compte à rebours récursif",must:"recursif",
+ q:"Écrire la procédure récursive Rebours(n) qui affiche n, n − 1, …, 1 (un par ligne), sans boucle.",
+ h:["Cas de base : si n = 0, on ne fait rien.","Sinon : Afficher n, puis appeler Rebours(n - 1)."],
+ start:`Procédure Rebours(n : entier)
+   
+FinProcédure`, tests:[{call:"Rebours(3)",out:[3,2,1]},{call:"Rebours(1)",out:[1]},{call:"Rebours(5)",out:[5,4,3,2,1]}],
+ s:`Procédure Rebours(n : entier)
+   Si n > 0 Alors
+      Afficher n
+      Rebours(n - 1)
+   FinSi
+FinProcédure`},
+{id:"fibo",cat:"recursivite",d:3,t:"Suite de Fibonacci",must:"recursif",
+ q:"Écrire la fonction récursive Fibonacci(n) : Fibonacci(0) = 0, Fibonacci(1) = 1, et ensuite Fibonacci(n) = Fibonacci(n − 1) + Fibonacci(n − 2).",
+ h:["Il y a DEUX cas de base : n = 0 et n = 1 (ou : si n <= 1, Retourner n).","Deux appels récursifs dans la même ligne."],
+ start:`Fonction Fibonacci(n : entier) : entier
+   
+FinFonction`, tests:[{call:"Fibonacci(0)",ret:0},{call:"Fibonacci(1)",ret:1},{call:"Fibonacci(10)",ret:55},{call:"Fibonacci(15)",ret:610}],
+ s:`Fonction Fibonacci(n : entier) : entier
+   Si n <= 1 Alors
+      Retourner n
+   FinSi
+   Retourner Fibonacci(n - 1) + Fibonacci(n - 2)
+FinFonction`},
 // ---------------------------------------------------------------- TABLEAUX
 {id:"parcours",cat:"tableaux",d:1,t:"Parcourir un tableau",must:"boucle",vars:"T",
  q:"Le tableau T est déjà rempli par le test (ne le redéfinis pas). Afficher chacun de ses éléments, un par ligne.",
@@ -2247,6 +2701,127 @@ Fin`},
       i ← i + 1
    FinTantQue
    Afficher pos
+Fin`},
+{id:"ca30",cat:"tableaux",d:3,t:"Atelier : chiffre d'affaires",must:"boucle",vars:"CA",
+ q:'Le tableau CA contient le chiffre d\'affaires de chaque jour (30 jours dans le cours, moins dans les tests). Dans un même algorithme, afficher sur 3 lignes : le total, le numéro du jour des meilleures ventes (jour 1 = indice 0), puis le nombre de jours où le CA a dépassé 1 000 €.',
+ h:["Un seul parcours avec 3 variables : total, meilleur (un indice), compteur.","Si CA[i] > CA[meilleur] alors meilleur ← i. Le numéro du jour est meilleur + 1."],
+ start:D0, tests:[{vars:{CA:[800,1200,950,1500,1100]},out:[5550,4,3]},{vars:{CA:[500,400]},out:[900,1,0]},{vars:{CA:[2000,2000,100]},out:[4100,1,2]}],
+ s:`Début
+   total ← 0
+   meilleur ← 0
+   compteur ← 0
+   Pour i ← 0 à taille(CA) - 1 Faire
+      total ← total + CA[i]
+      Si CA[i] > CA[meilleur] Alors
+         meilleur ← i
+      FinSi
+      Si CA[i] > 1000 Alors
+         compteur ← compteur + 1
+      FinSi
+   FinPour
+   Afficher "Total : ", total
+   Afficher "Meilleur jour : ", meilleur + 1
+   Afficher "Jours au-dessus de 1000 : ", compteur
+Fin`},
+{id:"occur",cat:"tableaux",d:3,t:"Atelier : toutes les positions d'une valeur",must:"boucle",vars:"T et x",
+ q:'T et x sont fournis. Afficher chaque position où x apparaît (une par ligne), puis le nombre d\'occurrences. Si x est absent, afficher seulement "Absent".',
+ h:["Un compteur, et un Afficher i chaque fois que T[i] = x.","Après la boucle : Si compteur = 0 alors \"Absent\", sinon afficher compteur."],
+ start:D0, tests:[{vars:{T:[4,7,4,1],x:4},out:[0,2,2]},{vars:{T:[4,7,4,1],x:9},out:["Absent"]},{vars:{T:[5,5,5],x:5},out:[0,1,2,3]}],
+ s:`Début
+   compteur ← 0
+   Pour i ← 0 à taille(T) - 1 Faire
+      Si T[i] = x Alors
+         Afficher i
+         compteur ← compteur + 1
+      FinSi
+   FinPour
+   Si compteur = 0 Alors
+      Afficher "Absent"
+   Sinon
+      Afficher compteur
+   FinSi
+Fin`},
+{id:"presences",cat:"tableaux",d:2,t:"Atelier : taux de présence",must:"boucle",vars:"P",
+ q:'P contient les présences (1 = présent, 0 = absent). Afficher sur 4 lignes : le nombre de présents, le nombre d\'absents, le taux de présence en %, puis "Objectif atteint" si le taux est au moins 80 %, sinon "Objectif non atteint".',
+ h:["Compte les 1 ; les absents = taille(P) - présents.","taux ← presents / taille(P) * 100"],
+ start:D0, tests:[{vars:{P:[1,1,1,1,0]},out:[4,1,80,"Objectif atteint"]},{vars:{P:[1,0,0,1]},out:[2,2,50,"Objectif non atteint"]},{vars:{P:[1,1,1]},out:[3,0,100,"Objectif atteint"]}],
+ s:`Début
+   presents ← 0
+   Pour i ← 0 à taille(P) - 1 Faire
+      Si P[i] = 1 Alors
+         presents ← presents + 1
+      FinSi
+   FinPour
+   absents ← taille(P) - presents
+   taux ← presents / taille(P) * 100
+   Afficher presents
+   Afficher absents
+   Afficher taux
+   Si taux >= 80 Alors
+      Afficher "Objectif atteint"
+   Sinon
+      Afficher "Objectif non atteint"
+   FinSi
+Fin`},
+{id:"ordre",cat:"tableaux",d:2,t:"Atelier : croissant ou décroissant ?",must:"boucle",vars:"T",
+ q:'T est fourni. Afficher "Croissant" si ses éléments sont rangés dans l\'ordre croissant, "Décroissant" s\'ils sont dans l\'ordre décroissant, sinon "Non trié".',
+ h:["Deux booléens, croissant et decroissant, initialisés à VRAI.","Compare chaque T[i] avec T[i + 1], pour i de 0 à taille(T) - 2."],
+ start:D0, tests:[{vars:{T:[1,2,3]},out:["Croissant"]},{vars:{T:[5,3,1]},out:["Décroissant"]},{vars:{T:[1,3,2]},out:["Non trié"]},{vars:{T:[1,1,2]},out:["Croissant"]}],
+ s:`Début
+   croissant ← VRAI
+   decroissant ← VRAI
+   Pour i ← 0 à taille(T) - 2 Faire
+      Si T[i] > T[i + 1] Alors
+         croissant ← FAUX
+      FinSi
+      Si T[i] < T[i + 1] Alors
+         decroissant ← FAUX
+      FinSi
+   FinPour
+   Si croissant Alors
+      Afficher "Croissant"
+   Sinon Si decroissant Alors
+      Afficher "Décroissant"
+   Sinon
+      Afficher "Non trié"
+   FinSi
+Fin`},
+// ---------------------------------------------------------------- TRIS
+{id:"bulles",cat:"tris",d:3,t:"Tri à bulles",must:"boucle",vars:"T",
+ q:"T est fourni. Trier T par ordre croissant avec le tri à bulles, puis terminer par Afficher T.",
+ h:["N ← taille(T), puis deux boucles : i de 0 à N - 2, j de 0 à N - i - 2.","Si T[j] > T[j + 1] : échange avec Temp (3 lignes)."],
+ start:D0, tests:[{vars:{T:[5,1,4,2,8]},out:["[1, 2, 4, 5, 8]"]},{vars:{T:[3,2,1]},out:["[1, 2, 3]"]},{vars:{T:[7]},out:["[7]"]}],
+ s:`Début
+   N ← taille(T)
+   Pour i ← 0 à N - 2 Faire
+      Pour j ← 0 à N - i - 2 Faire
+         Si T[j] > T[j + 1] Alors
+            Temp ← T[j]
+            T[j] ← T[j + 1]
+            T[j + 1] ← Temp
+         FinSi
+      FinPour
+   FinPour
+   Afficher T
+Fin`},
+{id:"selection",cat:"tris",d:3,t:"Tri par sélection",must:"boucle",vars:"T",
+ q:"T est fourni. Trier T par ordre croissant avec le tri par sélection, puis terminer par Afficher T.",
+ h:["Pour chaque i : IndiceMin ← i, puis cherche un plus petit élément entre i + 1 et N - 1.","Après la boucle j : échange T[i] et T[IndiceMin] avec Temp."],
+ start:D0, tests:[{vars:{T:[5,1,4,2,8]},out:["[1, 2, 4, 5, 8]"]},{vars:{T:[9,7,8]},out:["[7, 8, 9]"]},{vars:{T:[2,1]},out:["[1, 2]"]}],
+ s:`Début
+   N ← taille(T)
+   Pour i ← 0 à N - 2 Faire
+      IndiceMin ← i
+      Pour j ← i + 1 à N - 1 Faire
+         Si T[j] < T[IndiceMin] Alors
+            IndiceMin ← j
+         FinSi
+      FinPour
+      Temp ← T[i]
+      T[i] ← T[IndiceMin]
+      T[IndiceMin] ← Temp
+   FinPour
+   Afficher T
 Fin`},
 // ---------------------------------------------------------------- COMPLEXITÉ
 {id:"doublon",cat:"complexite",d:3,t:"Détecter un doublon en O(N)",must:"fonction",
@@ -2712,6 +3287,14 @@ const MUST = {
   boucle:[/^\s*(pour|tant\s*que|repeter)\b/m, "Cet exercice demande d'utiliser une boucle (Pour, TantQue ou Répéter) : afficher les valeurs « à la main » ne compte pas !"],
   si:[/^\s*si\b/m, "Cet exercice demande d'utiliser une condition (Si … Alors)."],
   fonction:[/^\s*(fonction|procedure)\b/m, "Cet exercice demande d'écrire une Fonction / Procédure."],
+  // récursif : une fonction dont le corps contient un appel à elle-même
+  recursif:[{test:code=>{
+    const re=/^\s*(?:fonction|procedure)\s+(\w+)\s*\(/gm; let m;
+    while((m=re.exec(code))){
+      const rest=code.slice(re.lastIndex), end=rest.search(/^\s*fin\s*(fonction|procedure)/m);
+      if(new RegExp("\\b"+m[1]+"\\s*\\(").test(end<0?rest:rest.slice(0,end))) return true;
+    }
+    return false; }}, "Cet exercice demande une version RÉCURSIVE : ta fonction doit s'appeler elle-même (pas de boucle à la place)."],
 };
 const stars = d => `<span class="diff">${"★".repeat(d)}${"☆".repeat(3-d)}</span>`;
 function exos(arg){
