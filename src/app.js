@@ -31,7 +31,7 @@ const level = () => Math.floor(S.xp/100)+1;
 
 // ================== NAV ==================
 const NAV = [
-  ["home","🏠","Accueil"],["cours","📚","Cours"],["quiz","🎯","Quiz"],["exam","📝","Examen blanc"],
+  ["home","🏠","Accueil"],["cours","📚","Cours"],["quiz","🎯","Quiz"],["exam","📝","Examen blanc"],["chat","💬","Assistant"],
   ["sep"],["fiche","📋","Fiche résumé"],["flash","🃏","Flashcards"],["errors","🔁","Mes erreurs"],["exos","✏️","Atelier code"],
 ];
 let view = "home", stopTimer = null;
@@ -45,7 +45,7 @@ function go(v, arg){
   if(stopTimer){ stopTimer(); stopTimer=null; }
   view = v; renderSide();
   const m = $("#main"); m.scrollTop = 0; window.scrollTo(0,0);
-  ({home, cours, quiz:quizSetup, exam:examIntro, fiche, flash, errors, exos})[v](arg);
+  ({home, cours, quiz:quizSetup, exam:examIntro, chat, fiche, flash, errors, exos})[v](arg);
 }
 const page = html => { $("#main").innerHTML = `<div class="wrap">${html}</div>`; enhance(); };
 function enhance(){
@@ -80,6 +80,7 @@ function home(){
     <div class="card click" onclick="go('cours')"><h3>📚 Cours</h3>${LESSONS.length} leçons expliquées simplement, avec exemples et exécution pas à pas.</div>
     <div class="card click" onclick="go('quiz')"><h3>🎯 Quiz par catégorie</h3>Choisis tes thèmes, le nombre de questions. Ordre et réponses aléatoires.</div>
     <div class="card click" onclick="go('exam')"><h3>📝 Examen blanc</h3>30 questions chronométrées sur tout le programme, note sur 20.</div>
+    <div class="card click" onclick="go('chat')"><h3>💬 Assistant</h3>Pose tes questions sur le cours ou colle ton code. IA locale gratuite en option.</div>
     <div class="card click" onclick="go('fiche')"><h3>📋 Fiche résumé</h3>Tout le cours sur une page pour réviser vite.</div>
     <div class="card click" onclick="go('flash')"><h3>🃏 Flashcards</h3>${FLASH.length} cartes recto/verso pour mémoriser définitions et règles.</div>
     <div class="card click" onclick="go('exos')"><h3>✏️ Atelier code</h3>${EXOS.length} exercices : écris ton algorithme, il est exécuté et corrigé instantanément (${EXOS.filter(e=>S.solved[e.id]).length} réussis).</div>

@@ -30,7 +30,7 @@ $iconUri = "data:image/png;base64," + [Convert]::ToBase64String($png)
 
 # 2. HTML autonome
 $css  = [IO.File]::ReadAllText("$src\style.css", $utf8)
-$js   = (@("course.js","questions.js","interp.js","exos.js","app.js") | ForEach-Object { [IO.File]::ReadAllText("$src\$_", $utf8) }) -join "`n;`n"
+$js   = (@("course.js","questions.js","interp.js","exos.js","chat.js","app.js") | ForEach-Object { [IO.File]::ReadAllText("$src\$_", $utf8) }) -join "`n;`n"
 $tpl  = [IO.File]::ReadAllText("$src\index.html", $utf8)
 $html = $tpl.Replace("/*CSS*/", $css).Replace("/*JS*/", $js).Replace("/*ICON*/", $iconUri)
 [IO.File]::WriteAllText("$PSScriptRoot\index.html", $html, $utf8)

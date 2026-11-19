@@ -25,6 +25,7 @@ Cours d'algorithmique interactif pour débutants, qui tourne entièrement dans l
 - Flashcards et fiche résumé
 - Examen blanc
 - Atelier de pseudo-code : le code est exécuté par un interpréteur intégré et vérifié sur des jeux de tests
+- Assistant : répond aux questions à partir du cours et exécute le pseudo-code collé ; IA locale optionnelle (Qwen 2.5 via [WebLLM](https://github.com/mlc-ai/web-llm), exécutée dans le navigateur avec WebGPU, sans serveur ni clé API)
 - Progression sauvegardée en local (`localStorage`)
 
 Aucun serveur, aucune dépendance : l'application complète est un seul fichier `index.html`.
@@ -44,6 +45,7 @@ src/
 ├── course.js      catégories, leçons, traces pas à pas, fiche résumé, flashcards
 ├── questions.js   questions des quiz et générateurs aléatoires
 ├── exos.js        exercices de l'atelier et jeux de tests
+├── chat.js        assistant : recherche dans le cours + IA locale WebLLM
 ├── interp.js      interpréteur de pseudo-code
 ├── app.js         interface
 ├── style.css
