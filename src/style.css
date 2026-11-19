@@ -266,3 +266,6 @@ pre.code{max-width:100%}
 @keyframes blink{50%{opacity:0}}
 .er{color:#f87171}
 @media (max-width:760px){ .msg{max-width:96%} #chat-in{font-size:16px} }
+
+.tasks{margin:6px 0 4px;padding-left:22px}
+.tasks li{margin:3px 0}

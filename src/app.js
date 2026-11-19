@@ -366,14 +366,21 @@ const skeleton = s => s.split("\n").map(l=>{
   return ind+"…";
 }).join("\n");
 
+// Énoncé : lignes « - » en liste à puces, autres lignes en paragraphes
+function fmtQ(q){
+  let html = "", list = [];
+  const flush = () => { if(list.length){ html += `<ul class="tasks">${list.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>`; list = []; } };
+  q.split("\n").forEach(l=>{ if(/^- /.test(l)) list.push(l.slice(2)); else { flush(); html += `<p style="margin:6px 0">${esc(l)}</p>`; } });
+  flush(); return html;
+}
 function exoPage(id){
   const e = EXOS.find(x=>x.id===id), i = EXOS.indexOf(e), nextE = EXOS[i+1];
   const hints = [...e.h, "__skel"];
   EX = {e, hint:0, tries:0};
   page(`<div class="row" style="justify-content:space-between;margin-bottom:10px"><button class="btn ghost sm" onclick="go('exos')">← Atelier</button><span class="row"><span class="pill">${CATS[e.cat].icon} ${CATS[e.cat].name}</span>${stars(e.d)}<small style="color:var(--mut)">Exercice ${i+1}/${EXOS.length}</small></span></div>
   <h1>${e.t} ${S.solved[id]?"✅":""}</h1>
-  <div class="card"><b>📝 Énoncé</b><p style="margin:6px 0 10px">${e.q}</p>
-  ${e.vars?`<p class="note">📦 <b>${e.vars}</b> ${e.vars.includes(" et ")?"sont fournis":"est fourni"} par chaque test : utilise-le directement, sans le redéfinir (les valeurs sont visibles dans les tests).</p>`:""}
+  <div class="card"><b>📝 Énoncé</b>${fmtQ(e.q)}${e.spec?`<div class="box ex" style="margin:10px 0"><b class="t">🎯 Ce que la correction attend</b>${esc(e.spec)}</div>`:""}
+  ${e.vars&&!e.spec?`<p class="note">📦 <b>${e.vars}</b> ${e.vars.includes(" et ")?"sont fournis":"est fourni"} par chaque test : utilise-le directement, sans le redéfinir (les valeurs sont visibles dans les tests).</p>`:""}
   ${e.tests[0].call?`<p class="note">🧪 Les tests appellent directement ta fonction : pas besoin de programme principal.</p>`:e.tests.some(t=>t.in)?`<p class="note">⌨️ Les valeurs de chaque test sont données une par une à tes instructions <code>Lire</code>. Un <code>Afficher</code> juste avant un <code>Lire</code> (invite) est ignoré par la correction.</p>`:""}
   <div id="hints"></div>
   <div class="row" style="margin-top:10px"><button class="btn ghost sm" id="hintb">💡 Indice (0/${hints.length})</button><button class="btn ghost sm" id="solb">📖 Voir la correction</button></div><div id="sol"></div></div>

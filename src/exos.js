@@ -190,7 +190,8 @@ Fin`},
    FinSi
 Fin`},
 {id:"triangle",cat:"conditions",d:2,t:"Triangle possible ?",must:"si",
- q:'Lire trois longueurs a, b et c. Afficher "Triangle possible" si elles peuvent former un triangle, sinon "Triangle impossible". (Exercice du cours.)',
+ q:"Déterminer si trois longueurs peuvent former un triangle.",
+ spec:"Lis a, b puis c, et affiche \"Triangle possible\" ou \"Triangle impossible\". Rappel : chaque côté doit être plus petit que la somme des deux autres.",
  h:["Inégalité triangulaire : chaque côté doit être plus petit que la somme des deux autres.","a < b + c ET b < a + c ET c < a + b"],
  start:D0, tests:[{in:[3,4,5],out:["Triangle possible"]},{in:[1,2,10],out:["Triangle impossible"]},{in:[5,5,5],out:["Triangle possible"]},{in:[10,3,4],out:["Triangle impossible"]}],
  s:`Début
@@ -204,7 +205,8 @@ Fin`},
    FinSi
 Fin`},
 {id:"typetri",cat:"conditions",d:2,t:"Équilatéral, isocèle ou quelconque",must:"si",
- q:'Lire les trois côtés a, b, c d\'un triangle. Afficher "Équilatéral" (3 côtés égaux), "Isocèle" (2 côtés égaux) ou "Quelconque". (Exercice du cours.)',
+ q:"Déterminer si un triangle est équilatéral, isocèle ou quelconque à partir de ses trois côtés.\n- Équilatéral : les 3 côtés sont égaux.\n- Isocèle : 2 côtés sont égaux.\n- Quelconque : aucun côté égal.",
+ spec:"Lis a, b puis c, et affiche \"Équilatéral\", \"Isocèle\" ou \"Quelconque\".",
  h:["Teste d'abord le cas le plus restrictif : les trois égaux.","Isocèle : a = b OU b = c OU a = c."],
  start:D0, tests:[{in:[5,5,5],out:["Équilatéral"]},{in:[5,5,3],out:["Isocèle"]},{in:[3,5,5],out:["Isocèle"]},{in:[5,3,5],out:["Isocèle"]},{in:[3,4,5],out:["Quelconque"]}],
  s:`Début
@@ -220,7 +222,8 @@ Fin`},
    FinSi
 Fin`},
 {id:"reduc",cat:"conditions",d:2,t:"Réduction commerciale",must:"si",
- q:"Lire le montant d'un achat et afficher le montant de la réduction : aucune sous 100 €, 5 % de 100 à 199,99 €, 10 % à partir de 200 €. (Exercice du cours.)",
+ q:"Calculer le montant d'une réduction commerciale :\n- Achat inférieur à 100 € : aucune réduction.\n- De 100 à 199,99 € : réduction de 5 %.\n- À partir de 200 € : réduction de 10 %.",
+ spec:"Lis le montant de l'achat et affiche le montant de la réduction (0 s'il n'y en a pas).",
  h:["Trois tranches → Si … Sinon Si … Sinon.","5 % de montant = montant * 5 / 100"],
  start:D0, tests:[{in:[50],out:[0]},{in:[100],out:[5]},{in:[150],out:[7.5]},{in:[200],out:[20]},{in:[320],out:[32]}],
  s:`Début
@@ -235,7 +238,8 @@ Fin`},
    Afficher reduction
 Fin`},
 {id:"datevalide",cat:"conditions",d:3,t:"Date valide",must:"si",
- q:'Lire le jour, le mois puis l\'année. Afficher "Date valide" ou "Date invalide". Pense aux mois de 30 jours (4, 6, 9, 11) et à février (29 jours les années bissextiles, sinon 28). (Exercice du cours.)',
+ q:"Écrire un algorithme qui détermine si une date est valide à partir du jour, du mois et de l'année.",
+ spec:"Lis le jour, le mois puis l'année, et affiche \"Date valide\" ou \"Date invalide\". Pense aux mois de 30 jours (4, 6, 9, 11) et à février (29 jours les années bissextiles, sinon 28).",
  h:["Calcule d'abord le nombre de jours du mois dans une variable joursMax.","Février : réutilise la règle de l'année bissextile. Ensuite : mois entre 1 et 12 ET jour entre 1 et joursMax."],
  start:D0, tests:[{in:[29,2,2024],out:["Date valide"]},{in:[29,2,2023],out:["Date invalide"]},{in:[31,4,2025],out:["Date invalide"]},{in:[31,12,2025],out:["Date valide"]},{in:[0,5,2025],out:["Date invalide"]},{in:[15,13,2025],out:["Date invalide"]}],
  s:`Début
@@ -325,7 +329,8 @@ Fin`},
    Afficher "Décollage"
 Fin`},
 {id:"table",cat:"boucles",d:2,t:"Table de multiplication",must:"boucle",
- q:'Lire n et afficher sa table de multiplication de 1 à 10, une ligne par calcul (ex : "7 x 3 = 21").',
+ q:"Écrire un algorithme qui demande un nombre N et affiche sa table de multiplication.",
+ spec:"Une ligne par calcul, de 1 à 10 (ex : \"7 x 3 = 21\").",
  h:["Une boucle Pour i de 1 à 10.","Afficher n, \" x \", i, \" = \", n * i"],
  start:D0, tests:[{in:[7],out:[7,14,21,28,35,42,49,56,63,70]},{in:[3],out:[3,6,9,12,15,18,21,24,27,30]}],
  s:`Début
@@ -371,7 +376,8 @@ Fin`},
    Afficher compteur
 Fin`},
 {id:"mdp",cat:"boucles",d:1,t:"Mot de passe",must:"boucle",
- q:'Redemander un mot de passe (Lire) jusqu\'à ce que l\'utilisateur saisisse le bon : algo2026. Afficher ensuite "Accès autorisé". (Exercice du cours.)',
+ q:"Écrire un algorithme qui demande un mot de passe jusqu'à ce que l'utilisateur saisisse le bon mot de passe.",
+ spec:"Le bon mot de passe est algo2026. Ensuite, affiche \"Accès autorisé\".",
  h:["Répéter … Jusqu'à mdp = \"algo2026\"","Un texte se compare entre guillemets."],
  start:D0, tests:[{in:["abc","1234","algo2026"],out:["Accès autorisé"]},{in:["algo2026"],out:["Accès autorisé"]}],
  s:`Début
@@ -382,7 +388,8 @@ Fin`},
    Afficher "Accès autorisé"
 Fin`},
 {id:"somme0",cat:"boucles",d:2,t:"Somme jusqu'à 0",must:"boucle",
- q:"Demander des nombres (Lire) jusqu'à ce que l'utilisateur saisisse 0, puis afficher la somme des nombres saisis (le 0 n'est pas compté). (Exercice du cours.)",
+ q:"Écrire un algorithme qui demande des nombres à l'utilisateur jusqu'à ce qu'il saisisse 0, puis affiche la somme des nombres saisis (sans compter le 0).",
+ spec:"Affiche uniquement la somme, à la fin.",
  h:["Lis un premier nombre AVANT la boucle, puis TantQue n ≠ 0.","Dans la boucle : ajoute n à la somme, puis lis le nombre suivant."],
  start:D0, tests:[{in:[5,3,2,0],out:[10]},{in:[0],out:[0]},{in:[-4,4,7,0],out:[7]}],
  s:`Début
@@ -395,7 +402,8 @@ Fin`},
    Afficher somme
 Fin`},
 {id:"diviseurs",cat:"boucles",d:2,t:"Diviseurs d'un nombre",must:"boucle",
- q:"Lire un entier positif n et afficher tous ses diviseurs, un par ligne, du plus petit au plus grand. (Exercice du cours : décomposition en facteurs.)",
+ q:"Décomposition en facteurs : demander un entier positif et afficher ses diviseurs.",
+ spec:"Affiche les diviseurs un par ligne, du plus petit au plus grand.",
  h:["d est un diviseur de n si n MOD d = 0.","Teste tous les d de 1 à n."],
  start:D0, tests:[{in:[12],out:[1,2,3,4,6,12]},{in:[7],out:[1,7]},{in:[1],out:[1]}],
  s:`Début
@@ -407,7 +415,8 @@ Fin`},
    FinPour
 Fin`},
 {id:"interets",cat:"boucles",d:3,t:"Intérêts bancaires",must:"boucle",
- q:"Une somme est déposée sur un compte rémunéré à 3 % par an. Lire la somme et afficher le nombre d'années nécessaires pour gagner au moins 2 000 € de plus que la somme de départ. (Exercice du cours.)",
+ q:"Simulation d'intérêts bancaires : une personne dépose une somme sur un compte rémunéré à 3 % par an. Écrire un algorithme qui calcule le nombre d'années nécessaires pour atteindre un bénéfice de 2 000 € en plus de la somme.",
+ spec:"Lis la somme de départ et affiche le nombre d'années.",
  h:["Chaque année : capital ← capital * 1.03","TantQue capital - somme < 2000 : on ajoute une année."],
  start:D0, tests:[{in:[10000],out:[7]},{in:[1000],out:[38]},{in:[50000],out:[2]}],
  s:`Début
@@ -421,7 +430,8 @@ Fin`},
    Afficher annees
 Fin`},
 {id:"palindrome",cat:"boucles",d:3,t:"Nombre palindrome",must:"boucle",
- q:'Lire un entier positif et afficher "Palindrome" s\'il se lit de la même façon dans les deux sens (ex : 1221), sinon "Pas palindrome". (Exercice du cours.)',
+ q:"Vérification d'un palindrome : demander un nombre entier et déterminer s'il se lit de la même manière de gauche à droite et de droite à gauche (exemple : 1221).",
+ spec:"Affiche \"Palindrome\" ou \"Pas palindrome\".",
  h:["Construis le nombre inversé : n MOD 10 donne le dernier chiffre, n DIV 10 l'enlève.","inverse ← inverse * 10 + reste MOD 10, puis reste ← reste DIV 10, TantQue reste > 0. Compare ensuite inverse et n."],
  start:D0, tests:[{in:[1221],out:["Palindrome"]},{in:[123],out:["Pas palindrome"]},{in:[7],out:["Palindrome"]},{in:[10],out:["Pas palindrome"]},{in:[12321],out:["Palindrome"]}],
  s:`Début
@@ -622,6 +632,33 @@ Fin`},
    FinPour
    Afficher compteur
 Fin`},
+{id:"promo",cat:"tableaux",d:3,t:"Atelier : notes de la promotion",must:"boucle",vars:"Notes",
+ q:"Atelier pratique, dans un même algorithme.\nOn dispose d'un tableau Notes contenant les notes de plusieurs centaines ou milliers d'étudiants.\n- Calculer la moyenne de la promotion.\n- Trouver la meilleure et la moins bonne note.\n- Compter les étudiants admis (note ≥ 10).",
+ spec:"Affiche 4 lignes : la moyenne, la meilleure note, la moins bonne note, puis le nombre d'admis. Notes est fourni par les tests.",
+ h:["Un seul parcours suffit : somme, maximum, minimum et compteur se mettent à jour dans la même boucle.","Initialise maximum et minimum à Notes[0], somme et compteur à 0."],
+ start:D0, tests:[{vars:{Notes:[12,15,8,17,14]},out:[13.2,17,8,4]},{vars:{Notes:[10,20]},out:[15,20,10,2]},{vars:{Notes:[6,9,3]},out:[6,9,3,0]}],
+ s:`Début
+   somme ← 0
+   compteur ← 0
+   maximum ← Notes[0]
+   minimum ← Notes[0]
+   Pour i ← 0 à taille(Notes) - 1 Faire
+      somme ← somme + Notes[i]
+      Si Notes[i] > maximum Alors
+         maximum ← Notes[i]
+      FinSi
+      Si Notes[i] < minimum Alors
+         minimum ← Notes[i]
+      FinSi
+      Si Notes[i] >= 10 Alors
+         compteur ← compteur + 1
+      FinSi
+   FinPour
+   Afficher "Moyenne :", somme / taille(Notes)
+   Afficher "Meilleure note :", maximum
+   Afficher "Moins bonne note :", minimum
+   Afficher "Admis :", compteur
+Fin`},
 {id:"inverse",cat:"tableaux",d:2,t:"Afficher à l'envers",must:"boucle",vars:"T",
  q:"T est fourni. Afficher ses éléments du dernier au premier.",
  h:["Le dernier indice est taille(T) - 1, le premier est 0.","Pour i allant de taille(T) - 1 à 0 pas de -1"],
@@ -660,7 +697,8 @@ Fin`},
    Afficher pos
 Fin`},
 {id:"ca30",cat:"tableaux",d:3,t:"Atelier : chiffre d'affaires",must:"boucle",vars:"CA",
- q:'Le tableau CA contient le chiffre d\'affaires de chaque jour (30 jours dans le cours, moins dans les tests). Dans un même algorithme, afficher sur 3 lignes : le total, le numéro du jour des meilleures ventes (jour 1 = indice 0), puis le nombre de jours où le CA a dépassé 1 000 €.',
+ q:"Dans un même algorithme.\nUn magasin enregistre le chiffre d'affaires réalisé pendant 30 jours (tableau CA).\n- Calculer le chiffre d'affaires total.\n- Trouver le jour où les ventes ont été les plus importantes.\n- Compter le nombre de jours où le chiffre d'affaires a dépassé 1 000 €.",
+ spec:"Affiche 3 lignes : le total, puis le numéro du jour des meilleures ventes (jour 1 = indice 0), puis le nombre de jours au-dessus de 1 000 €. CA est fourni par les tests (moins de 30 jours) : ne le redéfinis pas.",
  h:["Un seul parcours avec 3 variables : total, meilleur (un indice), compteur.","Si CA[i] > CA[meilleur] alors meilleur ← i. Le numéro du jour est meilleur + 1."],
  start:D0, tests:[{vars:{CA:[800,1200,950,1500,1100]},out:[5550,4,3]},{vars:{CA:[500,400]},out:[900,1,0]},{vars:{CA:[2000,2000,100]},out:[4100,1,2]}],
  s:`Début
@@ -681,7 +719,8 @@ Fin`},
    Afficher "Jours au-dessus de 1000 : ", compteur
 Fin`},
 {id:"occur",cat:"tableaux",d:3,t:"Atelier : toutes les positions d'une valeur",must:"boucle",vars:"T et x",
- q:'T et x sont fournis. Afficher chaque position où x apparaît (une par ligne), puis le nombre d\'occurrences. Si x est absent, afficher seulement "Absent".',
+ q:"Dans un même algorithme.\nOn dispose d'un tableau T contenant 20 nombres entiers et d'un nombre x à rechercher (dans le cours, x est demandé avec Lire).\n- Vérifier si ce nombre existe dans le tableau.\n- Afficher toutes les positions où il apparaît.\n- Compter le nombre d'occurrences.",
+ spec:"Affiche chaque position (une par ligne), puis le nombre d'occurrences. Si x est absent, affiche seulement \"Absent\". T et x sont fournis par les tests.",
  h:["Un compteur, et un Afficher i chaque fois que T[i] = x.","Après la boucle : Si compteur = 0 alors \"Absent\", sinon afficher compteur."],
  start:D0, tests:[{vars:{T:[4,7,4,1],x:4},out:[0,2,2]},{vars:{T:[4,7,4,1],x:9},out:["Absent"]},{vars:{T:[5,5,5],x:5},out:[0,1,2,3]}],
  s:`Début
@@ -699,7 +738,8 @@ Fin`},
    FinSi
 Fin`},
 {id:"presences",cat:"tableaux",d:2,t:"Atelier : taux de présence",must:"boucle",vars:"P",
- q:'P contient les présences (1 = présent, 0 = absent). Afficher sur 4 lignes : le nombre de présents, le nombre d\'absents, le taux de présence en %, puis "Objectif atteint" si le taux est au moins 80 %, sinon "Objectif non atteint".',
+ q:"Dans un même algorithme.\nUn tableau P contient les présences de 25 étudiants (1 = présent, 0 = absent).\n- Compter le nombre de présents et d'absents.\n- Calculer le taux de présence.\n- Identifier si le taux de présence est supérieur ou égal à 80 %.",
+ spec:"Affiche 4 lignes : présents, absents, taux en %, puis \"Objectif atteint\" ou \"Objectif non atteint\". P est fourni par les tests.",
  h:["Compte les 1 ; les absents = taille(P) - présents.","taux ← presents / taille(P) * 100"],
  start:D0, tests:[{vars:{P:[1,1,1,1,0]},out:[4,1,80,"Objectif atteint"]},{vars:{P:[1,0,0,1]},out:[2,2,50,"Objectif non atteint"]},{vars:{P:[1,1,1]},out:[3,0,100,"Objectif atteint"]}],
  s:`Début
@@ -721,7 +761,8 @@ Fin`},
    FinSi
 Fin`},
 {id:"ordre",cat:"tableaux",d:2,t:"Atelier : croissant ou décroissant ?",must:"boucle",vars:"T",
- q:'T est fourni. Afficher "Croissant" si ses éléments sont rangés dans l\'ordre croissant, "Décroissant" s\'ils sont dans l\'ordre décroissant, sinon "Non trié".',
+ q:"Dans un même algorithme.\nOn dispose d'un tableau T de nombres entiers.\n- Vérifier si les éléments sont classés dans l'ordre croissant.\n- Vérifier s'ils sont classés dans l'ordre décroissant.\n- Afficher un message indiquant le résultat.",
+ spec:"Affiche \"Croissant\", \"Décroissant\" ou \"Non trié\". T est fourni par les tests.",
  h:["Deux booléens, croissant et decroissant, initialisés à VRAI.","Compare chaque T[i] avec T[i + 1], pour i de 0 à taille(T) - 2."],
  start:D0, tests:[{vars:{T:[1,2,3]},out:["Croissant"]},{vars:{T:[5,3,1]},out:["Décroissant"]},{vars:{T:[1,3,2]},out:["Non trié"]},{vars:{T:[1,1,2]},out:["Croissant"]}],
  s:`Début
